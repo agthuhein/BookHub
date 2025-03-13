@@ -2,6 +2,7 @@ package com.bookhub.Service;
 
 import com.bookhub.Model.Users;
 import com.bookhub.Repository.UserRepository;
+import com.bookhub.Security.JwtUtil;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.orm.jpa.JpaSystemException;
@@ -18,12 +19,14 @@ public class UserService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private JwtUtil jwtUtil;
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtUtil = jwtUtil;
     }
 
-    public Users registerUser(@RequestBody Users user) {
+    public String registerUser(@RequestBody Users user) {
         // Check if the user already exists based on email
         Optional<Users> existingUser = userRepository.findByEmail(user.getEmail());
         if (existingUser.isPresent()) {
@@ -44,7 +47,9 @@ public class UserService {
         user.setUpdatedAt(LocalDateTime.now());
 
         try {
-            return userRepository.save(user);
+            userRepository.save(user);
+            String token = jwtUtil.generateToken(user.getEmail());
+            return token;
         } catch (DataIntegrityViolationException e) {
             throw new IllegalStateException("Error saving user to the database", e);
         }
