@@ -2,7 +2,7 @@ package com.bookhub.Controller;
 
 import com.bookhub.Model.Users;
 import com.bookhub.Security.JwtUtil;
-import com.bookhub.Service.UserService;
+import com.bookhub.Service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +14,14 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/api/auth")
+public class AuthController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
-    private UserService userService;
+    private AuthService userService;
 
-    public UserController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AuthController(AuthService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
@@ -44,29 +42,23 @@ public class UserController {
     @PostMapping("/login")
     public String login(@RequestBody Users user)
         throws AuthenticationException {
-        String userEmail = user.getEmail();
-        String password = user.getPassword();
+       try{
+           String userEmail = user.getEmail();
+           String password = user.getPassword();
 
-        Authentication auth = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(userEmail, password)
-        );
-        if(auth.isAuthenticated()) {
-            return jwtUtil.generateToken(userEmail);
-        }
-        else {
-            throw new BadCredentialsException("Invalid email or password");
-        }
+           Authentication auth = authenticationManager.authenticate(
+                   new UsernamePasswordAuthenticationToken(userEmail, password)
+           );
+           if(auth.isAuthenticated()) {
+               return jwtUtil.generateToken(userEmail);
+           }
+           else {
+               throw new BadCredentialsException("Invalid credentials");
+           }
+       }
+       catch (BadCredentialsException e) {
+           return "Error: " + e.getMessage();
+       }
     }
-    @GetMapping("/getUsers")
-    public ResponseEntity<Object> getAllUser() {
-        try{
-            List<Users> users = userService.getAllUsers();
-            return new ResponseEntity<>(users, HttpStatus.OK);
-        }
-        catch (Exception e){
-            return new ResponseEntity<>("An error occurred while fetching all the users.",
-                    HttpStatus.INTERNAL_SERVER_ERROR);
-        }
 
-    }
 }

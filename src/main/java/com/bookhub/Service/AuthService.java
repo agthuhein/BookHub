@@ -5,22 +5,20 @@ import com.bookhub.Repository.UserRepository;
 import com.bookhub.Security.JwtUtil;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class AuthService {
 
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private JwtUtil jwtUtil;
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
@@ -59,17 +57,5 @@ public class UserService {
         catch (Exception e) {
             throw new RuntimeException("An unexpected error occurred while saving users.", e);
         }
-    }
-    //getALlUser
-    public List<Users> getAllUsers() {
-        try{
-            return userRepository.findAll();
-        }
-        catch (DataAccessException e) {
-            throw new RuntimeException("Database access error occurred while fetching users.", e);
-        } catch (Exception e) {
-            throw new RuntimeException("An unexpected error occurred while fetching users.", e);
-        }
-
     }
 }
