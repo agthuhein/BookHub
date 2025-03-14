@@ -16,52 +16,70 @@ import java.util.Optional;
 public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
     //User can update only email, password, and phone number
     public boolean updateUser(Integer userId, Users updatedUser) {
-        try{
+        try {
+            //Login user
             String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
             Optional<Users> loggedInUser = userRepository.findByEmail(loggedInEmail);
 
+            //To update user
+            Optional<Users> toUpdateUser = userRepository.findById(userId);
+
+
             System.out.println(loggedInUser);
+            System.out.println(toUpdateUser);
+            if(loggedInUser.isEmpty()) {
+                throw new UnauthorizedActionException("Unauthorized action. Please log in again.");
+            }
+            if(toUpdateUser.isEmpty()){
+                throw new UserNotFoundException("User id: " + toUpdateUser.get().getUserId() + " not found");
+            }
+            String loginUserRole = loggedInUser.get().getRole();
+            String toUpdateUserRole = toUpdateUser.get().getRole();
 
-            if(loggedInUser.isEmpty()){
-                throw new UnauthorizedActionException("Unauthorized: User not found.");
+            switch (loginUserRole) {
+                case "USER":
+                    if (toUpdateUserRole.equals("USER")) {
+                        return userInfoUpdate(updatedUser, toUpdateUser);
+                    } else {
+                        throw new UnauthorizedActionException("Unauthorized action to update an ADMIN's information");
+                    }
+                case "ADMIN":
+                    if (toUpdateUserRole.equals("ADMIN") || toUpdateUserRole.equals("USER")) {
+                        return userInfoUpdate(updatedUser, toUpdateUser);
+                    }
+                    break;
+                default:
+                    throw new UnauthorizedActionException("Unauthorized action to update an ADMIN's information");
             }
-
-            Users l_user = loggedInUser.get();
-            Optional<Users> toUpdate = userRepository.findById(userId);
-            if(toUpdate.isEmpty()){
-                throw new UsernameNotFoundException("User id: " + userId + " not found.");
-            }
-
-            Users toUpdateUser = toUpdate.get();
-            // If logged-in user has 'USER' role, prevent them from updating an 'ADMIN' user
-            if("USER".equals(l_user.getRole()) &&
-                    "ADMIN".equals(toUpdateUser.getRole())){
-                throw new UnauthorizedActionException("Unauthorized: You cannot update ADMIN user's information.");
-            }
-            // Proceed with the update
-            if (updatedUser.getEmail() != null && !updatedUser.getEmail().isEmpty()) {
-                toUpdateUser.setEmail(updatedUser.getEmail());
-            }
-            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
-                toUpdateUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-            }
-            if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().isEmpty()) {
-                toUpdateUser.setPhoneNumber(updatedUser.getPhoneNumber());
-            }
-
-            userRepository.save(toUpdateUser);
-            return true;
-
         }
-        catch (Exception e){
+        catch (UnauthorizedActionException e) {
+            throw new UnauthorizedActionException("Unauthorized action to update an ADMIN's information");
+        }
+        catch (Exception e) {
             throw new RuntimeException("Error updating user: " + e.getMessage());
         }
+        return false;
     }
 
+    private boolean userInfoUpdate(Users updatedUser, Optional<Users> toUpdateUser) {
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().isEmpty()) {
+            toUpdateUser.get().setEmail(updatedUser.getEmail());
+        }
+        if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+            String encryptedPassword = passwordEncoder.encode(updatedUser.getPassword());
+            //user.setPassword(encryptedPassword);
+            toUpdateUser.get().setPassword(encryptedPassword);
+        }
+        if (updatedUser.getPhoneNumber() != null && !updatedUser.getPhoneNumber().isEmpty()) {
+            toUpdateUser.get().setPhoneNumber(updatedUser.getPhoneNumber());
+        }
+        userRepository.save(toUpdateUser.get());
+        return true;
     }
+}

@@ -1,5 +1,6 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.EmailAlreadyExistException;
 import com.bookhub.Model.Users;
 import com.bookhub.Repository.UserRepository;
 import com.bookhub.Security.JwtUtil;
@@ -15,21 +16,22 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
-    private UserRepository userRepository;
-    private PasswordEncoder passwordEncoder;
-    private JwtUtil jwtUtil;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
     public AuthService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtUtil jwtUtil) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtUtil = jwtUtil;
     }
-
     public String registerUser(@RequestBody Users user) {
         // Check if the user already exists based on email
         Optional<Users> existingUser = userRepository.findByEmail(user.getEmail());
+
         if (existingUser.isPresent()) {
             throw new IllegalArgumentException("Email already in use. Please try again with another email.");
         }
+
         user.setFirstName(user.getFirstName());
         user.setLastName(user.getLastName());
 

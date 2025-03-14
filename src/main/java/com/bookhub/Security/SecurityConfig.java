@@ -33,11 +33,12 @@ public class SecurityConfig{
                         session ->
                                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()
-                        //.requestMatchers("/api/users/**").hasRole("USER")
+                        .requestMatchers("/register").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .requestMatchers("/api/users/**").hasRole("USER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         //.requestMatchers("/api/users/{userId}/update").permitAll()
-                        .requestMatchers("/api/users/{id}/update").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/updateUser/{userId}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

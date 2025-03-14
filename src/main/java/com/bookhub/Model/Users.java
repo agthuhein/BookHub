@@ -1,6 +1,7 @@
 package com.bookhub.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -12,23 +13,30 @@ public class Users {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;  // UUID stored as String
 
+    @NotBlank(message = "First name cannot be empty")
     @Column(name = "first_name", length = 100, nullable = false)
     private String firstName;
 
+    @NotBlank(message = "Last name cannot be empty")
     @Column(name = "last_name", length = 100, nullable = false)
     private String lastName;
 
+    @NotBlank(message = "Password cannot be empty")
     @Column(name = "password", length = 255, nullable = false)
     private String password;
 
+    @NotBlank(message = "Email cannot be empty")
     @Column(name = "email", length = 255, nullable = false, unique = true)
     private String email;
 
+    @NotBlank(message = "Phone number cannot be empty")
     @Column(name = "phone_number", length = 20, nullable = false)
     private String phoneNumber;
 
+    @NotBlank(message = "Role cannot be empty")
     @Column(name = "role", length = 10, nullable = false)
     private String role;
+
 
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
