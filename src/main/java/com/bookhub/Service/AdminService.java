@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Service
 public class AdminService {
-    private List<Users> usersList = new ArrayList<>();
+
     private UserRepository userRepository;
     public AdminService(UserRepository userRepository) {
         this.userRepository = userRepository;

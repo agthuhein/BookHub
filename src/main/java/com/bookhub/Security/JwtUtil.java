@@ -13,8 +13,9 @@ import java.util.Map;
 public class JwtUtil {
     private final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
 
-    public String generateToken(String userEmail) {
+    public String generateToken(String userEmail, String role) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("role", role);
         return Jwts.builder()
                 .claims(claims)
                 .subject(userEmail)
@@ -25,6 +26,10 @@ public class JwtUtil {
     }
     public String extractUserEmail(String token) {
         return extractAllClaims(token).getSubject();
+    }
+    public String extractRole(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("role", String.class);
     }
     public boolean validateToken(String token, String userEmail) {
         final String extractedUserEmail = extractUserEmail(token);
@@ -42,3 +47,4 @@ public class JwtUtil {
                 .getPayload();
     }
 }
+

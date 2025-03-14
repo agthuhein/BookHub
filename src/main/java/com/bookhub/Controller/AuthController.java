@@ -45,12 +45,13 @@ public class AuthController {
        try{
            String userEmail = user.getEmail();
            String password = user.getPassword();
+           String role = user.getRole();
 
            Authentication auth = authenticationManager.authenticate(
                    new UsernamePasswordAuthenticationToken(userEmail, password)
            );
            if(auth.isAuthenticated()) {
-               return jwtUtil.generateToken(userEmail);
+               return jwtUtil.generateToken(userEmail, role);
            }
            else {
                throw new BadCredentialsException("Invalid credentials");

@@ -46,7 +46,7 @@ public class AuthService {
 
         try {
             userRepository.save(user);
-            String token = jwtUtil.generateToken(user.getEmail());
+            String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
             return token;
         } catch (DataIntegrityViolationException e) {
             throw new IllegalStateException("Error saving user to the database", e);
