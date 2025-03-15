@@ -26,4 +26,9 @@ public class PublisherService {
             throw new RuntimeException("An unexpected error occurred while fetching all authors.", e);
         }
     }
+
+    //Add new publisher
+    public void addPublisher(Publishers publisher) {
+
+    }
 }
