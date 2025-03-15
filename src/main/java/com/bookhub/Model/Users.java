@@ -11,6 +11,7 @@ import java.util.Objects;
 public class Users {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Integer userId;  // UUID stored as String
 
     @NotBlank(message = "First name cannot be empty")
