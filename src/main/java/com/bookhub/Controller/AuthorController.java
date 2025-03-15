@@ -36,7 +36,7 @@ public class AuthorController {
         }
         try {
             authorService.addAuthor(author);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Author added successfully");
+            return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added author.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding author. " + e.getMessage());
         }
@@ -51,7 +51,7 @@ public class AuthorController {
         }
         try{
             authorService.updateAuthor(authorId, author);
-            return ResponseEntity.status(HttpStatus.OK).body("Author updated successfully");
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully updated author.");
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating author. " + e.getMessage());
@@ -62,7 +62,7 @@ public class AuthorController {
     public ResponseEntity<Object> deleteAuthor(@PathVariable("authorId") Integer authorId) {
         try {
             authorService.deleteAuthor(authorId);
-            return ResponseEntity.status(HttpStatus.OK).body("Author deleted successfully");
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully deleted author.");
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting author. " + e.getMessage());
