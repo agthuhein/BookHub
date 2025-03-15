@@ -85,8 +85,14 @@
 			<artifactId>java-jwt</artifactId>
 			<version>3.18.2</version> <!-- Or latest available version -->
 		</dependency>
+        <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
 
-	</dependencies>
+    </dependencies>
 
 	<build>
 		<plugins>
