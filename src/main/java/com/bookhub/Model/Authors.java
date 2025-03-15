@@ -17,6 +17,14 @@ public class Authors {
     @Column(name = "author_name", length = 255, nullable = false)
     private String authorName;
 
+    public Authors() {
+    }
+
+    public Authors(Integer authorId, String authorName) {
+        this.authorId = authorId;
+        this.authorName = authorName;
+    }
+
     public Integer getAuthorId() {
         return authorId;
     }

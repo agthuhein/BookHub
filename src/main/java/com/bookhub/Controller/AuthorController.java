@@ -58,7 +58,7 @@ public class AuthorController {
         }
     }
 
-    @DeleteMapping("/api/admin/updateAuthor/{authorId}")
+    @DeleteMapping("/api/admin/deleteAuthor/{authorId}")
     public ResponseEntity<Object> deleteAuthor(@PathVariable("authorId") Integer authorId) {
         try {
             authorService.deleteAuthor(authorId);

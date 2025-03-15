@@ -47,6 +47,21 @@ public class Users {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
+    public Users() {
+    }
+
+    public Users(Integer userId, String firstName, String lastName, String password, String email, String phoneNumber, String role, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
+
     public Integer getUserId() {
         return userId;
     }
