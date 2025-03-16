@@ -25,10 +25,9 @@ public class Categories {
     public Categories() {
     }
 
-    public Categories(Integer categoryId, String categoryName, Set<Books> books) {
+    public Categories(Integer categoryId, String categoryName) {
         this.categoryId = categoryId;
         this.categoryName = categoryName;
-        //this.books = books;
     }
 
     public Integer getCategoryId() {

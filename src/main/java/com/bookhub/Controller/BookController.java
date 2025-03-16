@@ -1,5 +1,6 @@
 package com.bookhub.Controller;
 
+import com.bookhub.CustomException.ResourceNotFoundException;
 import com.bookhub.Model.Books;
 import com.bookhub.Service.BookService;
 import org.springframework.http.HttpStatus;
@@ -88,21 +89,61 @@ public class BookController {
 
     @GetMapping("/getBookByAuthor/{authorId}")
     public ResponseEntity<Object> getBookByAuthor(@PathVariable("authorId") Integer authorId) {
-//        try{
-//            List<Books> books = bookService.getBooksByAuthor(authorId);
-//            //Optional books = bookService.getBooksByAuthor(authorId);
-//            if (!books.isEmpty()) {
-//                return new ResponseEntity<>(books, HttpStatus.OK);
-//            }
-//            else {
-//                return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
-//            }
-//        }
-//        catch (Exception e) {
-//            return new ResponseEntity<>("An error occurred while fetching the book by author.",
-//                    HttpStatus.INTERNAL_SERVER_ERROR);
-//        }
-        List<Books> books = bookService.getBooksByAuthor(authorId);
-        return ResponseEntity.ok(books);
+        try{
+            List<Books> books = bookService.getBooksByAuthor(authorId);
+            if (!books.isEmpty()) {
+                return new ResponseEntity<>(books, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>("Book not found for the author.", HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (ResourceNotFoundException e)
+        {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching the book by author.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/getBookByCategory/{categoryId}")
+    public ResponseEntity<Object> getBookByCategory(@PathVariable("categoryId") Integer categoryId) {
+        try{
+            List<Books> books = bookService.getBooksByCategory(categoryId);
+            if (!books.isEmpty()) {
+                return new ResponseEntity<>(books, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>("Book not found for category.", HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (ResourceNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching the book by Category.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    @GetMapping("/getBookByPublisher/{publisherId}")
+    public ResponseEntity<Object> getBooksByPublisher(@PathVariable("publisherId") Integer publisherId) {
+        try {
+            List<Books> books = bookService.getBooksByPublisher(publisherId);
+            if (!books.isEmpty()) {
+                return new ResponseEntity<>(books, HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<>("Book not found for the publisher.", HttpStatus.NOT_FOUND);
+            }
+        }
+        catch (ResourceNotFoundException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching the book by publisher.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }

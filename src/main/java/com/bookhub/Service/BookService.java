@@ -3,8 +3,13 @@ package com.bookhub.Service;
 import com.bookhub.CustomException.ResourceNotFoundException;
 import com.bookhub.Model.Authors;
 import com.bookhub.Model.Books;
+import com.bookhub.Model.Categories;
+import com.bookhub.Model.Publishers;
 import com.bookhub.Repository.AuthorsRepository;
 import com.bookhub.Repository.BooksRepository;
+import com.bookhub.Repository.CategoriesRepository;
+import com.bookhub.Repository.PublishersRepository;
+import org.aspectj.weaver.patterns.TypeCategoryTypePattern;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,15 +24,16 @@ public class BookService {
 
     private final BooksRepository booksRepository;
     private final AuthorsRepository authorsRepository;
-    public BookService(BooksRepository booksRepository, AuthorsRepository authorsRepository) {
+    private final CategoriesRepository categoriesRepository;
+    private final PublishersRepository publishersRepository;
+    public BookService(BooksRepository booksRepository, AuthorsRepository authorsRepository,
+                       CategoriesRepository categoriesRepository, PublishersRepository publishersRepository) {
         this.booksRepository = booksRepository;
         this.authorsRepository = authorsRepository;
+        this.categoriesRepository = categoriesRepository;
+        this.publishersRepository = publishersRepository;
     }
 
-//    public List<BookDTO> getBookDetails() {
-//        //return Collections.unmodifiableList(booksRepository.findAll());
-//        return booksRepository.getAllBooks();
-//    }
     //Get all Books
     @Transactional(readOnly = true)
     public List<Books> getAllBooks() {
@@ -106,10 +112,42 @@ public class BookService {
             throw new RuntimeException("An unexpected error occurred while fetching book by author. " + e.getMessage());
         }
 
-//        Authors author = authorsRepository.findById(authorId)
-//                .orElseThrow(() -> new ResourceNotFoundException("Author with ID " + authorId + " not found"));
-//        return booksRepository.findByAuthorsContains(author);
     }
+
+    @Transactional
+    public List<Books> getBooksByCategory(Integer categoryId) {
+        Optional<Categories> categories = categoriesRepository.findById(categoryId);
+        if(categories.isEmpty()){
+            throw new ResourceNotFoundException("Category not found");
+        }
+        try{
+            return booksRepository.findByCategories(categories.get());
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while fetching book by Category. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while fetching book by Category. " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public List<Books> getBooksByPublisher(Integer publisherId) {
+        Optional<Publishers> publishers = publishersRepository.findById(publisherId);
+        if(publishers.isEmpty()){
+            throw new ResourceNotFoundException("Publisher not found");
+        }
+        try{
+            return booksRepository.findByPublishers(publishers.get());
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while fetching book by Publisher. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while fetching book by Publisher. " + e.getMessage());
+        }
+    }
+
 }
 
 
