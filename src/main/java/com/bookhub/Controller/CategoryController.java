@@ -25,7 +25,7 @@ public class CategoryController {
             return new ResponseEntity<>(categories, HttpStatus.OK);
         }
         catch(Exception e){
-            return new ResponseEntity<>("An error occurred while fetching all the authors.",
+            return new ResponseEntity<>("An error occurred while fetching all the categories.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
