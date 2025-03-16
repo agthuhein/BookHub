@@ -1,10 +1,15 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.ResourceNotFoundException;
+import com.bookhub.Model.Authors;
 import com.bookhub.Model.Books;
+import com.bookhub.Repository.AuthorsRepository;
 import com.bookhub.Repository.BooksRepository;
 import org.springframework.dao.DataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,8 +18,10 @@ import java.util.Optional;
 public class BookService {
 
     private final BooksRepository booksRepository;
-    public BookService(BooksRepository booksRepository) {
+    private final AuthorsRepository authorsRepository;
+    public BookService(BooksRepository booksRepository, AuthorsRepository authorsRepository) {
         this.booksRepository = booksRepository;
+        this.authorsRepository = authorsRepository;
     }
 
 //    public List<BookDTO> getBookDetails() {
@@ -82,9 +89,28 @@ public class BookService {
             throw new RuntimeException("An unexpected error occurred while fetching book by ISBN. " + e.getMessage());
         }
     }
-    //public Books getBookById(Long id) { return booksRepository.findById(id).orElse(null); }
-    //public Books saveBook(Books book) { return booksRepository.save(book); }
-    //public void deleteBook(Long id) { booksRepository.deleteById(id); }
-    //public Optional<Books> getBookByIsdn(String isdn) { return booksRepository.findByIsdn(isdn); }
 
+    @Transactional
+    public List<Books> getBooksByAuthor(Integer authorId) {
+        Optional<Authors> authors = authorsRepository.findById(authorId);
+        if(authors.isEmpty()){
+            throw new ResourceNotFoundException("Author not found");
+        }
+        try {
+            return booksRepository.findByAuthorsContains(authors.get());
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while fetching book by author. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while fetching book by author. " + e.getMessage());
+        }
+
+//        Authors author = authorsRepository.findById(authorId)
+//                .orElseThrow(() -> new ResourceNotFoundException("Author with ID " + authorId + " not found"));
+//        return booksRepository.findByAuthorsContains(author);
+    }
 }
+
+
+

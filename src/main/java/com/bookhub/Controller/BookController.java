@@ -85,4 +85,24 @@ public class BookController {
         }
 
     }
+
+    @GetMapping("/getBookByAuthor/{authorId}")
+    public ResponseEntity<Object> getBookByAuthor(@PathVariable("authorId") Integer authorId) {
+//        try{
+//            List<Books> books = bookService.getBooksByAuthor(authorId);
+//            //Optional books = bookService.getBooksByAuthor(authorId);
+//            if (!books.isEmpty()) {
+//                return new ResponseEntity<>(books, HttpStatus.OK);
+//            }
+//            else {
+//                return new ResponseEntity<>("Book not found", HttpStatus.NOT_FOUND);
+//            }
+//        }
+//        catch (Exception e) {
+//            return new ResponseEntity<>("An error occurred while fetching the book by author.",
+//                    HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+        List<Books> books = bookService.getBooksByAuthor(authorId);
+        return ResponseEntity.ok(books);
+    }
 }
