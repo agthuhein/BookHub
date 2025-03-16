@@ -1,19 +1,18 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Users;
-import com.bookhub.Repository.UserRepository;
+import com.bookhub.Repository.UsersRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AdminService {
 
-    private UserRepository userRepository;
-    public AdminService(UserRepository userRepository) {
+    private UsersRepository userRepository;
+    public AdminService(UsersRepository userRepository) {
         this.userRepository = userRepository;
     }
     //Get ALl Users

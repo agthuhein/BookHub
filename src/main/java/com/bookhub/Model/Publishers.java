@@ -3,7 +3,9 @@ package com.bookhub.Model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "publishers")
@@ -17,12 +19,16 @@ public class Publishers {
     @Column(name = "publisher_name", length = 255, nullable = false)
     private String publisherName;
 
+//    @OneToMany(mappedBy = "publishers")
+//    private Set<Books> books = new HashSet<>();
+
     public Publishers() {
     }
 
-    public Publishers(Integer publisherId, String publisherName) {
+    public Publishers(Integer publisherId, String publisherName, Set<Books> books) {
         this.publisherId = publisherId;
         this.publisherName = publisherName;
+        //this.books = books;
     }
 
     public Integer getPublisherId() {

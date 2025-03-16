@@ -3,10 +3,8 @@ package com.bookhub.Service;
 import com.bookhub.CustomException.UnauthorizedActionException;
 import com.bookhub.CustomException.UserNotFoundException;
 import com.bookhub.Model.Users;
-import com.bookhub.Repository.UserRepository;
-import com.bookhub.Security.JwtUtil;
+import com.bookhub.Repository.UsersRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +13,8 @@ import java.util.Optional;
 @Service
 public class UserService {
     private final PasswordEncoder passwordEncoder;
-    private final UserRepository userRepository;
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    private final UsersRepository userRepository;
+    public UserService(UsersRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }

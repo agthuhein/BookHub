@@ -1,21 +1,17 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Users;
-import com.bookhub.Repository.UserRepository;
+import com.bookhub.Repository.UsersRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepository userRepository;
-    public CustomUserDetailsService(UserRepository userRepository) {
+    private UsersRepository userRepository;
+    public CustomUserDetailsService(UsersRepository userRepository) {
         this.userRepository = userRepository;
     }
 

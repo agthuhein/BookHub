@@ -19,3 +19,13 @@ spring:
 
   main:
     web-application-type: servlet
+
+#logging:
+#  level:
+#    root: INFO
+#    org.springframework: DEBUG
+#    org.hibernate: DEBUG
+#    com.bookhub: DEBUG
+#  file:
+#    name: app.log
+#    path: logs

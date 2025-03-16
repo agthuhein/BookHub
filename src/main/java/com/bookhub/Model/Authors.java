@@ -1,9 +1,12 @@
 package com.bookhub.Model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "authors")
@@ -17,12 +20,16 @@ public class Authors {
     @Column(name = "author_name", length = 255, nullable = false)
     private String authorName;
 
+//    @ManyToMany(mappedBy = "authors")
+//    private Set<Books> books = new HashSet<>();
+
     public Authors() {
     }
 
-    public Authors(Integer authorId, String authorName) {
+    public Authors(Integer authorId, String authorName, Set<Books> books) {
         this.authorId = authorId;
         this.authorName = authorName;
+        //this.books = books;
     }
 
     public Integer getAuthorId() {
@@ -56,7 +63,7 @@ public class Authors {
     @Override
     public String toString() {
         return "Authors{" +
-                "bookId=" + authorId +
+                "authorId=" + authorId +
                 ", authorName='" + authorName + '\'' +
                 '}';
     }

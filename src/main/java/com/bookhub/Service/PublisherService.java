@@ -1,7 +1,7 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Publishers;
-import com.bookhub.Repository.PublisherRepository;
+import com.bookhub.Repository.PublishersRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
@@ -9,8 +9,8 @@ import java.util.List;
 
 @Service
 public class PublisherService {
-    private final PublisherRepository publisherRepository;
-    public PublisherService(PublisherRepository publisherRepository) {
+    private final PublishersRepository publisherRepository;
+    public PublisherService(PublishersRepository publisherRepository) {
         this.publisherRepository = publisherRepository;
     }
 
