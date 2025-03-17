@@ -152,7 +152,7 @@ public class BookService {
     @Transactional
     public void addNewBook(Books book) {
         Optional<Books> books = booksRepository.findByIsbn(book.getIsbn());
-        int stockQuantity = book.getStockQuantity();
+        //int stockQuantity = book.getStockQuantity();
         BigDecimal price = book.getPrice();
         if(books.isPresent()){
             throw new IllegalStateException("A book with this ISBN already exists.");
@@ -173,6 +173,50 @@ public class BookService {
             throw new RuntimeException("An unexpected error occurred while adding a new book. " + e.getMessage());
         }
 
+    }
+
+    @Transactional
+    public void updateBook(Integer bookId, Books updateBook) {
+        if(!booksRepository.existsById(bookId)){
+            throw new ResourceNotFoundException("Book ID: " + bookId + " does not exist.");
+        }
+        Books existingBook = booksRepository.findById(bookId).get();
+
+        existingBook.setIsbn(updateBook.getIsbn());
+        existingBook.setTitle(updateBook.getTitle());
+        existingBook.setDescription(updateBook.getDescription());
+        existingBook.setPrice(updateBook.getPrice());
+        existingBook.setStockQuantity(updateBook.getStockQuantity());
+        existingBook.setPublishedDate(updateBook.getPublishedDate());
+        existingBook.setPublishers(updateBook.getPublishers());
+        existingBook.setCategories(updateBook.getCategories());
+        existingBook.setAuthors(updateBook.getAuthors());
+
+        try{
+            booksRepository.save(existingBook);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while updating an existing book. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while updating an existing book. " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    public void deleteBook(Integer bookId) {
+        if(!booksRepository.existsById(bookId)){
+            throw new ResourceNotFoundException("Book ID: " + bookId + " does not exist.");
+        }
+        try{
+            booksRepository.deleteById(bookId);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while deleting an existing book. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while deleting an existing book. " + e.getMessage());
+        }
     }
 
 }

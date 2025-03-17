@@ -4,6 +4,7 @@ import com.bookhub.CustomException.ResourceNotFoundException;
 import com.bookhub.Model.Books;
 import com.bookhub.Service.BookService;
 import jakarta.validation.Valid;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -153,12 +154,8 @@ public class BookController {
     @PostMapping("/api/admin/addNewBook")
     public ResponseEntity<Object> addNewBook(@Valid @RequestBody Books book, BindingResult result) {
         if (result.hasErrors()) {
-            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid book data. " + result.getAllErrors());
-            List<String> errors = result.getFieldErrors()
-                    .stream()
-                    .map(error -> error.getDefaultMessage())
-                    .collect(Collectors.toList());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", errors));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", result.getFieldErrors()
+                    .stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList())));
         }
         try{
             bookService.addNewBook(book);
@@ -167,8 +164,47 @@ public class BookController {
         catch (IllegalStateException e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+        catch (DataAccessException e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
         catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding book. " +e.getMessage());
+        }
+    }
+
+    //Upadte an existing book
+    @PutMapping("/api/admin/updateBook/{bookId}")
+    public ResponseEntity<Object> updateBook(@PathVariable("bookId") Integer bookId,
+                                             @Valid @RequestBody Books book,
+                                             BindingResult result) {
+        if (result.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", result.getFieldErrors()
+                    .stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList())));
+        }
+        try{
+            bookService.updateBook(bookId, book);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully updated a book.");
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating book. " +e.getMessage());
+        }
+    }
+
+    //Delete book by book Id
+    @DeleteMapping("/api/admin/deleteBook/{bookId}")
+    public ResponseEntity<Object> deleteBook(@PathVariable("bookId") Integer bookId) {
+        try{
+            bookService.deleteBook(bookId);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully deleted a book.");
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting book. " +e.getMessage());
         }
     }
 }
