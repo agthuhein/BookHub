@@ -17,23 +17,19 @@ public class Reviews {
     private String comment;
     private Integer rating;
     @CreatedDate
-    private LocalDateTime createdAt;
+    private LocalDateTime reviewPosted;
 
-//    @PrePersist
-//    public void prePersist() {
-//        this.createdAt = LocalDateTime.now();
-//    }
 
     public Reviews() {
     }
 
-    public Reviews(String id, Integer bookId, Integer userId, String comment, Integer rating, LocalDateTime createdAt) {
+    public Reviews(String id, Integer bookId, Integer userId, String comment, Integer rating, LocalDateTime reviewPosted) {
         this.id = id;
         this.bookId = bookId;
         this.userId = userId;
         this.comment = comment;
         this.rating = rating;
-        this.createdAt = createdAt;
+        this.reviewPosted = reviewPosted;
     }
 
     public String getId() {
@@ -77,24 +73,24 @@ public class Reviews {
         this.rating = rating;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getReviewPosted() {
+        return reviewPosted;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setReviewPosted(LocalDateTime reviewPosted) {
+        this.reviewPosted = reviewPosted;
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Reviews reviews = (Reviews) o;
-        return Objects.equals(id, reviews.id) && Objects.equals(bookId, reviews.bookId) && Objects.equals(userId, reviews.userId) && Objects.equals(comment, reviews.comment) && Objects.equals(rating, reviews.rating) && Objects.equals(createdAt, reviews.createdAt);
+        return Objects.equals(id, reviews.id) && Objects.equals(bookId, reviews.bookId) && Objects.equals(userId, reviews.userId) && Objects.equals(comment, reviews.comment) && Objects.equals(rating, reviews.rating) && Objects.equals(reviewPosted, reviews.reviewPosted);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, bookId, userId, comment, rating, createdAt);
+        return Objects.hash(id, bookId, userId, comment, rating, reviewPosted);
     }
 
     @Override
@@ -105,7 +101,7 @@ public class Reviews {
                 ", userId=" + userId +
                 ", comment='" + comment + '\'' +
                 ", rating=" + rating +
-                ", createdAt=" + createdAt +
+                ", reviewPosted=" + reviewPosted +
                 '}';
     }
 }
