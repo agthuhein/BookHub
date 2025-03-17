@@ -48,8 +48,8 @@ public class SecurityConfig{
                                 "/getBookByAuthor/{authorId}",
                                 "/getBookByCategory/{categoryId}",
                                 "/getBookByPublisher/{publisherId}",
-                                "/getAllReviews", "/addReview").permitAll()
-                        .requestMatchers("/api/users/**").hasRole("USER")
+                                "/getAllReviews").permitAll()
+                        .requestMatchers("/api/users/**", "/addReview").hasRole("USER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         //.requestMatchers("/api/users/{userId}/update").permitAll()
                         .requestMatchers("/api/updateUser/{userId}").hasAnyRole("ADMIN", "USER")

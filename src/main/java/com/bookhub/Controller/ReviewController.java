@@ -7,10 +7,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -37,7 +34,9 @@ public class ReviewController {
     }
 
     @PostMapping("/addReview")
-    public ResponseEntity<Object> addReview(@RequestBody Reviews review, BindingResult bindingResult) {
+    public ResponseEntity<Object> addReview(@RequestBody Reviews review,
+                                            @RequestHeader("Authorization") String token,
+                                            BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", bindingResult.getFieldErrors()
                     .stream().map(DefaultMessageSourceResolvable::getDefaultMessage).collect(Collectors.toList())));
@@ -46,7 +45,7 @@ public class ReviewController {
         Integer bookId = review.getBookId();
         Integer rating = review.getRating();
         try{
-            reviewService.addReview(userId, bookId, rating, review);
+            reviewService.addReview(bookId, rating, review, token.replace("Bearer ", ""));
             return ResponseEntity.status(HttpStatus.CREATED).body("Review added successfully")  ;
         }
         catch (ResourceNotFoundException e){

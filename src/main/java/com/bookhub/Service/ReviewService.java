@@ -1,16 +1,13 @@
 package com.bookhub.Service;
 
 import com.bookhub.CustomException.ResourceNotFoundException;
-import com.bookhub.CustomException.UserNotFoundException;
 import com.bookhub.Model.Books;
 import com.bookhub.Model.Reviews;
-import com.bookhub.Model.Users;
 import com.bookhub.Repository.Mongo.ReviewsRepository;
 import com.bookhub.Repository.MySQL.BooksRepository;
-import com.bookhub.Repository.MySQL.UsersRepository;
+import com.bookhub.Security.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,13 +17,13 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewsRepository reviewsRepository;
     private final BooksRepository booksRepository;
-    private final UsersRepository userRepository;
-    //private final JdbcTemplate jdbcTemplate; // Spring JDBC for MySQL queries
+    private final JwtUtil jwtUtil;
 
-    public ReviewService(ReviewsRepository reviewsRepository, BooksRepository booksRepository, UsersRepository userRepository) {
+    public ReviewService(ReviewsRepository reviewsRepository, BooksRepository booksRepository
+            , JwtUtil jwtUtil) {
         this.reviewsRepository = reviewsRepository;
         this.booksRepository = booksRepository;
-        this.userRepository = userRepository;
+        this.jwtUtil = jwtUtil;
     }
 
     @Transactional
@@ -48,15 +45,13 @@ public class ReviewService {
     }
 
     @Transactional
-    public void addReview(Integer userId, Integer bookId, Integer rating, Reviews reviews){
-        Optional<Users> user = userRepository.findById(userId);
+    public void addReview(Integer bookId, Integer rating, Reviews reviews, String token){
+        //Optional<Users> user = userRepository.findById(userId);
         Optional<Books> book = booksRepository.findById(bookId);
 
-        //System.out.println(user);
-        //System.out.println(book);
-        if(user.isEmpty()){
-            throw new ResourceNotFoundException("User not found");
-        }
+        Integer userId = jwtUtil.extractUserId(token);
+        //System.out.println("ID in Review Service Class " + testUserId);
+
         if(book.isEmpty()){
             throw new ResourceNotFoundException ("Book not found");
         }
@@ -64,6 +59,7 @@ public class ReviewService {
             throw new ResourceNotFoundException ("Invalid rating! Rating must be between 0 and 5");
         }
         try{
+            reviews.setUserId(userId);
             reviewsRepository.save(reviews);
         }
         catch (DataAccessException e){

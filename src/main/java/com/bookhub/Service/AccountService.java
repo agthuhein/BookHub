@@ -47,7 +47,7 @@ public class AccountService {
 
         try {
             userRepository.save(user);
-            String token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+            String token = jwtUtil.generateToken(user.getEmail(), user.getUserId());
             return token;
         } catch (DataIntegrityViolationException e) {
             throw new IllegalStateException("Error saving user to the database", e);

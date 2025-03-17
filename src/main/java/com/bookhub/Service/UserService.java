@@ -80,4 +80,20 @@ public class UserService {
         userRepository.save(toUpdateUser.get());
         return true;
     }
+
+
+    public Integer getUserId(String userEmail) {
+        if (userEmail != null && !userEmail.isEmpty()) {
+            try{
+                Optional<Users> user = userRepository.findByEmail(userEmail);
+                if (user.isPresent()) {
+                    return user.get().getUserId();
+                }
+            }
+            catch (Exception e) {
+                throw new UserNotFoundException("No related user with this email: " + userEmail);
+            }
+        }
+        return null;
+    }
 }

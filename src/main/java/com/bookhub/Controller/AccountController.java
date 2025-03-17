@@ -4,6 +4,7 @@ import com.bookhub.CustomException.MethodArgumentNotValidException;
 import com.bookhub.Model.Users;
 import com.bookhub.Security.JwtUtil;
 import com.bookhub.Service.AccountService;
+import com.bookhub.Service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +21,13 @@ public class AccountController {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
     private AccountService authService;
+    private final UserService userService;
 
-    public AccountController(AccountService authService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AccountController(AccountService authService, AuthenticationManager authenticationManager,
+                             UserService userService, JwtUtil jwtUtil) {
         this.authService = authService;
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
         this.jwtUtil = jwtUtil;
     }
 
@@ -48,14 +52,17 @@ public class AccountController {
         try {
             String userEmail = user.getEmail();
             String password = user.getPassword();
-            String role = user.getRole();
+
+            Integer userID = userService.getUserId(userEmail);
+            //System.out.println("ID " + userID);
+
 
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(userEmail, password)
             );
 
             if (auth.isAuthenticated()) {
-                String token = jwtUtil.generateToken(userEmail, role);
+                String token = jwtUtil.generateToken(userEmail, userID);
                 return ResponseEntity.ok(token);
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
