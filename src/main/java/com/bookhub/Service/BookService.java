@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,6 +147,32 @@ public class BookService {
         catch (Exception e){
             throw new RuntimeException("An unexpected error occurred while fetching book by Publisher. " + e.getMessage());
         }
+    }
+
+    @Transactional
+    public void addNewBook(Books book) {
+        Optional<Books> books = booksRepository.findByIsbn(book.getIsbn());
+        int stockQuantity = book.getStockQuantity();
+        BigDecimal price = book.getPrice();
+        if(books.isPresent()){
+            throw new IllegalStateException("A book with this ISBN already exists.");
+        }
+        if(price.compareTo(BigDecimal.ZERO)<0){
+            throw new IllegalArgumentException("Price must be greater than zero.");
+        }
+//        if(stockQuantity <= 0){
+//            throw new IllegalArgumentException("Stock quantity cannot be 0 or less than 0.");
+//        }
+        try{
+            booksRepository.save(book);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while adding a new book. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while adding a new book. " + e.getMessage());
+        }
+
     }
 
 }

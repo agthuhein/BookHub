@@ -3,15 +3,17 @@ package com.bookhub.Controller;
 import com.bookhub.CustomException.ResourceNotFoundException;
 import com.bookhub.Model.Books;
 import com.bookhub.Service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 public class BookController {
@@ -144,6 +146,29 @@ public class BookController {
         catch (Exception e) {
             return new ResponseEntity<>("An error occurred while fetching the book by publisher.",
                     HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //Add new book
+    @PostMapping("/api/admin/addNewBook")
+    public ResponseEntity<Object> addNewBook(@Valid @RequestBody Books book, BindingResult result) {
+        if (result.hasErrors()) {
+            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid book data. " + result.getAllErrors());
+            List<String> errors = result.getFieldErrors()
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.toList());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", errors));
+        }
+        try{
+            bookService.addNewBook(book);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Successfully added a book.");
+        }
+        catch (IllegalStateException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error adding book. " +e.getMessage());
         }
     }
 }

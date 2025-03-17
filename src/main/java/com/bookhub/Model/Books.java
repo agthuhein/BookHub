@@ -1,6 +1,7 @@
 package com.bookhub.Model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,18 +18,26 @@ public class Books {
     private Integer bookId;
 
     @Column(name = "isbn", unique = true, nullable = false)
+    @NotBlank(message = "ISBN cannot be empty.")
+    @Size(min = 10, max = 13, message = "ISBN must be between 10 and 13 characters.")
     private String isbn;
 
     @Column(name = "title", nullable = false)
+    @NotBlank(message = "Title cannot be empty.")
     private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", nullable = false, columnDefinition = "TEXT")
+    @NotBlank(message = "Description cannot be empty.")
     private String description;
 
     @Column(nullable = false, precision = 10, scale = 2)
+    @DecimalMin(value = "0.01", message = "Price must be greater than 0.")
+    @NotNull(message = "Price is required.")
     private BigDecimal price;
 
     @Column(name = "stock_quantity", nullable = false)
+    @Min(value = 0, message = "Stock quantity cannot be negative.")
+    @NotNull(message = "Stock quantity is required.")
     private Integer stockQuantity;
 
     @Column(name = "published_date")
