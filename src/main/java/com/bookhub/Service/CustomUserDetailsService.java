@@ -1,7 +1,7 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Users;
-import com.bookhub.Repository.UsersRepository;
+import com.bookhub.Repository.MySQL.UsersRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

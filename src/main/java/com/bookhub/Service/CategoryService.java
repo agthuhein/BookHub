@@ -1,7 +1,7 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Categories;
-import com.bookhub.Repository.CategoriesRepository;
+import com.bookhub.Repository.MySQL.CategoriesRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

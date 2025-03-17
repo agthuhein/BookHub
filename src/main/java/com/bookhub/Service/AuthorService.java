@@ -1,12 +1,11 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Authors;
-import com.bookhub.Repository.AuthorsRepository;
+import com.bookhub.Repository.MySQL.AuthorsRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthorService {

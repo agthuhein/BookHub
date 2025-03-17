@@ -1,7 +1,7 @@
 package com.bookhub.Service;
 
 import com.bookhub.Model.Users;
-import com.bookhub.Repository.UsersRepository;
+import com.bookhub.Repository.MySQL.UsersRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 

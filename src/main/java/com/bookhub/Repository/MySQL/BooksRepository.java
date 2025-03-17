@@ -1,4 +1,4 @@
-package com.bookhub.Repository;
+package com.bookhub.Repository.MySQL;
 
 import com.bookhub.Model.Authors;
 import com.bookhub.Model.Books;
