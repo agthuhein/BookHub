@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -28,41 +29,34 @@ public class UserService {
             //To update user
             Optional<Users> toUpdateUser = userRepository.findById(userId);
 
-
-            System.out.println(loggedInUser);
-            System.out.println(toUpdateUser);
             if(loggedInUser.isEmpty()) {
                 throw new UnauthorizedActionException("Unauthorized action. Please log in again.");
             }
             if(toUpdateUser.isEmpty()){
                 throw new UserNotFoundException("User id: " + toUpdateUser.get().getUserId() + " not found");
             }
+
+            Integer loggedInUserId = loggedInUser.get().getUserId();
+            Integer toUpdateUserId = toUpdateUser.get().getUserId();
+
             String loginUserRole = loggedInUser.get().getRole();
             String toUpdateUserRole = toUpdateUser.get().getRole();
 
-            switch (loginUserRole) {
-                case "USER":
-                    if (toUpdateUserRole.equals("USER")) {
-                        return userInfoUpdate(updatedUser, toUpdateUser);
-                    } else {
-                        throw new UnauthorizedActionException("Unauthorized action to update an ADMIN's information");
-                    }
-                case "ADMIN":
-                    if (toUpdateUserRole.equals("ADMIN") || toUpdateUserRole.equals("USER")) {
-                        return userInfoUpdate(updatedUser, toUpdateUser);
-                    }
-                    break;
-                default:
-                    throw new UnauthorizedActionException("Unauthorized action to update an ADMIN's information");
+            if(loginUserRole.equals("ADMIN")){
+                return userInfoUpdate(updatedUser, toUpdateUser);
             }
-        }
-        catch (UnauthorizedActionException e) {
-            throw new UnauthorizedActionException("Unauthorized action to update an ADMIN's information");
+            if (loginUserRole.equals("USER") && toUpdateUserRole.equals("USER")) {
+                if (!Objects.equals(loggedInUserId, toUpdateUserId)) {
+                    throw new UnauthorizedActionException("Unauthorized action. Logged-in ID does not match.");
+                }
+                return userInfoUpdate(updatedUser, toUpdateUser);
+            }
+            throw new UnauthorizedActionException("Unauthorized action. You do not have permission to update ADMIN user.");
         }
         catch (Exception e) {
             throw new RuntimeException("Error updating user: " + e.getMessage());
         }
-        return false;
+        //return false;
     }
 
     private boolean userInfoUpdate(Users updatedUser, Optional<Users> toUpdateUser) {
@@ -80,7 +74,6 @@ public class UserService {
         userRepository.save(toUpdateUser.get());
         return true;
     }
-
 
     public Integer getUserId(String userEmail) {
         if (userEmail != null && !userEmail.isEmpty()) {

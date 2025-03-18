@@ -1,5 +1,6 @@
 package com.bookhub.Controller;
 
+import com.bookhub.CustomException.CustomDeletionException;
 import com.bookhub.Model.Categories;
 import com.bookhub.Service.CategoryService;
 import jakarta.validation.Valid;
@@ -65,6 +66,9 @@ public class CategoryController {
         try{
             categoryService.deleteCategory(categoryId);
             return ResponseEntity.status(HttpStatus.OK).body("Successfully deleted category.");
+        }
+        catch (CustomDeletionException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting category. " + e.getMessage());

@@ -1,5 +1,6 @@
 package com.bookhub.Controller;
 
+import com.bookhub.CustomException.CustomDeletionException;
 import com.bookhub.Model.Authors;
 import com.bookhub.Service.AuthorService;
 import jakarta.validation.Valid;
@@ -63,6 +64,9 @@ public class AuthorController {
         try {
             authorService.deleteAuthor(authorId);
             return ResponseEntity.status(HttpStatus.OK).body("Successfully deleted author.");
+        }
+        catch (CustomDeletionException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch(Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting author. " + e.getMessage());

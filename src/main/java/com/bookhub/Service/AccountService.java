@@ -28,7 +28,7 @@ public class AccountService {
         Optional<Users> existingUser = userRepository.findByEmail(user.getEmail());
 
         if (existingUser.isPresent()) {
-            throw new IllegalArgumentException("Email already in use. Please try again with another email.");
+            throw new RuntimeException("Email already in use. Please try again with another email.");
         }
 
         user.setFirstName(user.getFirstName());

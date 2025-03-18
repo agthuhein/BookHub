@@ -1,6 +1,7 @@
 package com.bookhub.Security;
 
 import com.bookhub.CustomException.CustomAccessDeniedHandler;
+import com.bookhub.CustomException.JwtAuthenticationEntryPoint;
 import com.bookhub.CustomException.UnauthorizedActionException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,6 +17,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 public class SecurityConfig{
+
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    public SecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -48,14 +56,15 @@ public class SecurityConfig{
                                 "/getBookByAuthor/{authorId}",
                                 "/getBookByCategory/{categoryId}",
                                 "/getBookByPublisher/{publisherId}",
-                                "/getAllReviews").permitAll()
-                        .requestMatchers("/api/users/**", "/addReview").hasRole("USER")
+                                "/getAllReviews", "/getReviewByBook/{bookId}").permitAll()
+                        .requestMatchers("/api/users/**", "/addReview", "/updateReview/{reviewId}").hasRole("USER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         //.requestMatchers("/api/users/{userId}/update").permitAll()
                         .requestMatchers("/api/updateUser/{userId}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
-                        .accessDeniedHandler(accessDeniedHandler()))
+                        .accessDeniedHandler(accessDeniedHandler())
+                        .authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

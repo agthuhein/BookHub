@@ -1,8 +1,11 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.CustomDeletionException;
 import com.bookhub.Model.Publishers;
+import com.bookhub.Repository.MySQL.BooksRepository;
 import com.bookhub.Repository.MySQL.PublishersRepository;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,8 +13,10 @@ import java.util.List;
 @Service
 public class PublisherService {
     private final PublishersRepository publisherRepository;
-    public PublisherService(PublishersRepository publisherRepository) {
+    private final BooksRepository booksRepository;
+    public PublisherService(PublishersRepository publisherRepository, BooksRepository booksRepository) {
         this.publisherRepository = publisherRepository;
+        this.booksRepository = booksRepository;
     }
 
     //Get all publishers
@@ -76,6 +81,12 @@ public class PublisherService {
     public void deletePublisher(Integer publisherId) {
         if(!publisherRepository.existsById(publisherId)){
             throw new RuntimeException("Publisher ID: " + publisherId + " does not exist!");
+        }
+        Publishers publisher = publisherRepository.findById(publisherId)
+                .orElseThrow(() -> new CustomDeletionException("Publisher not found"));
+
+        if (booksRepository.existsByPublishers(publisher)) {
+            throw new CustomDeletionException("Cannot delete publisher. Books are still associated with this publisher.");
         }
         try{
             publisherRepository.deleteById(publisherId);

@@ -1,5 +1,6 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.UnauthorizedActionException;
 import com.bookhub.Model.Users;
 import com.bookhub.Repository.MySQL.UsersRepository;
 import org.springframework.dao.DataAccessException;

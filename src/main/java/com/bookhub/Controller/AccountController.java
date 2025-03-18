@@ -16,6 +16,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+import java.util.stream.Collectors;
+
 @RestController
 public class AccountController {
     private final AuthenticationManager authenticationManager;
@@ -34,16 +37,19 @@ public class AccountController {
     @PostMapping("/register")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody Users user, BindingResult result) {
         if (result.hasErrors()) {
-            //throw new MethodArgumentNotValidException("Empty variables. Enter necessary fields.");
-            //return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user data: " + result.getAllErrors());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid user data." + result.getAllErrors());
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", result.getFieldErrors()
+                    .stream().map(error -> error.getDefaultMessage()).collect(Collectors.toList())));
         }
 
         try {
             authService.registerUser(user);
             return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error registering user. " + e.getMessage());
+        }
+        catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

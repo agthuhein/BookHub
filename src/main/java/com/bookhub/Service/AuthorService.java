@@ -1,17 +1,23 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.CustomDeletionException;
 import com.bookhub.Model.Authors;
 import com.bookhub.Repository.MySQL.AuthorsRepository;
+import com.bookhub.Repository.MySQL.BooksRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class AuthorService {
     private final AuthorsRepository authorRepository;
-    public AuthorService(AuthorsRepository authorRepository) {
+    private final BooksRepository booksRepository;
+    public AuthorService(AuthorsRepository authorRepository, BooksRepository booksRepository) {
         this.authorRepository = authorRepository;
+        this.booksRepository = booksRepository;
     }
     //Get All Authors
     public List<Authors> getAllAuthors() {
@@ -51,7 +57,7 @@ public class AuthorService {
     public void updateAuthor(Integer authorId, Authors updatedAuthor) {
         if(updatedAuthor.getAuthorName() != null && !updatedAuthor.getAuthorName().isEmpty()) {
             if (!authorRepository.existsById(authorId)) {
-                throw new RuntimeException("Author ID: " + authorId + "does not exist!");
+                throw new RuntimeException("Author ID: " + authorId + " does not exist!");
             }
             Authors author = authorRepository.findById(authorId).get();
             author.setAuthorName(updatedAuthor.getAuthorName());
@@ -73,8 +79,16 @@ public class AuthorService {
     //Delete author
     public void deleteAuthor(Integer authorId) {
         if(!authorRepository.existsById(authorId)) {
-            throw new RuntimeException("Author ID: " + authorId + "does not exist!");
+            throw new RuntimeException("Author ID: " + authorId + " does not exist!");
         }
+
+        Authors author = authorRepository.findById(authorId)
+                .orElseThrow(() -> new CustomDeletionException("Author not found"));
+
+        if(booksRepository.existsByAuthors(authorId)){
+            throw new CustomDeletionException("Cannot delete author. Books are still associated with the author.");
+        }
+
         try{
             authorRepository.deleteById(authorId);
         }

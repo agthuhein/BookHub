@@ -1,5 +1,6 @@
 package com.bookhub.Controller;
 
+import com.bookhub.CustomException.UnauthorizedActionException;
 import com.bookhub.Model.Users;
 import com.bookhub.Service.AdminService;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,9 @@ public class AdminController {
     {
         try{
             List<Users> l_users = adminService.getUsersByRole(role);
-            Optional<Users> users = l_users.stream().filter(u -> u.getRole().equals(role)).findFirst();
-            if (users.isPresent()) {
-                return new ResponseEntity<>(users.get(), HttpStatus.OK);
+            //Optional<Users> users = l_users.stream().filter(u -> u.getRole().equals(role)).findFirst();
+            if (!l_users.isEmpty()) {
+                return new ResponseEntity<>(l_users, HttpStatus.OK);
             }
             else {
                 return new ResponseEntity<>("No such role", HttpStatus.NOT_FOUND);
@@ -55,7 +56,7 @@ public class AdminController {
                 return new ResponseEntity<>(user.get(), HttpStatus.OK);
             }
             else {
-                return new ResponseEntity<>("No such user", HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("User with ID: " + userId + " not found", HttpStatus.NOT_FOUND);
             }
 
         }

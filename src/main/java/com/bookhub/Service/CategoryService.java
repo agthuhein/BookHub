@@ -1,6 +1,8 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.CustomDeletionException;
 import com.bookhub.Model.Categories;
+import com.bookhub.Repository.MySQL.BooksRepository;
 import com.bookhub.Repository.MySQL.CategoriesRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -11,8 +13,10 @@ import java.util.List;
 @Service
 public class CategoryService {
     private final CategoriesRepository categoriesRepository;
-    public CategoryService(CategoriesRepository categoriesRepository) {
+    private final BooksRepository booksRepository;
+    public CategoryService(CategoriesRepository categoriesRepository, BooksRepository booksRepository) {
         this.categoriesRepository = categoriesRepository;
+        this.booksRepository = booksRepository;
     }
 
     //Get all categories
@@ -80,6 +84,12 @@ public class CategoryService {
     public void deleteCategory(Integer categoryId){
         if(!categoriesRepository.existsById(categoryId)){
             throw new RuntimeException("Category ID: " + categoryId + " does not exist.");
+        }
+        Categories categories = categoriesRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomDeletionException("Publisher not found"));
+
+        if (booksRepository.existsByCategories(categories)) {
+            throw new CustomDeletionException("Cannot delete publisher. Books are still associated with this publisher.");
         }
         try{
             categoriesRepository.deleteById(categoryId);

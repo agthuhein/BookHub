@@ -40,13 +40,24 @@ public class ReviewService {
     }
 
     @Transactional
-    public List<Reviews> getReviewsByBookId(Long bookId){
-        return null;
+    public List<Reviews> getReviewsByBookId(Integer bookId){
+        try{
+            return reviewsRepository.getReviewsByBookId(bookId);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database error occurred while getting all reviews for given book id. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while getting all reviews for given book id. " + e.getMessage());
+        }
+
     }
 
     @Transactional
-    public void addReview(Integer bookId, Integer rating, Reviews reviews, String token){
-        //Optional<Users> user = userRepository.findById(userId);
+    public void addReview(Reviews reviews, String token){
+        Integer bookId = reviews.getBookId();
+        Integer rating = reviews.getRating();
+        String comment = reviews.getComment();
         Optional<Books> book = booksRepository.findById(bookId);
 
         Integer userId = jwtUtil.extractUserId(token);
@@ -54,6 +65,9 @@ public class ReviewService {
 
         if(book.isEmpty()){
             throw new ResourceNotFoundException ("Book not found");
+        }
+        if(comment == null || comment.isEmpty()){
+            throw new IllegalArgumentException("Comment cannot be empty");
         }
         if(rating > 5 || rating < 0){
             throw new ResourceNotFoundException ("Invalid rating! Rating must be between 0 and 5");
@@ -70,6 +84,40 @@ public class ReviewService {
         }
     }
 
+    @Transactional
+    public void updateReview(String reviewId, Reviews newReviews, String token){
+        Optional<Reviews> existingReview = reviewsRepository.findById(reviewId);
+        Integer loggedInUserId = jwtUtil.extractUserId(token);
+        Integer rating = newReviews.getRating();
+        String comment = newReviews.getComment();
+
+       if(existingReview.isPresent()){
+           Reviews ex_reviewInfo = existingReview.get();
+           if(!ex_reviewInfo.getUserId().equals(loggedInUserId)){
+               throw new IllegalArgumentException("You can only update your own reviews.");
+           }
+           if(comment == null || comment.isEmpty()){
+               throw new IllegalArgumentException("Comment cannot be empty");
+           }
+           if(rating > 5 || rating < 0){
+               throw new IllegalArgumentException("Invalid rating! Rating must be between 0 and 5");
+           }
+           ex_reviewInfo.setComment(newReviews.getComment());
+           ex_reviewInfo.setRating(newReviews.getRating());
+           try{
+               reviewsRepository.save(ex_reviewInfo);
+           }
+           catch (DataAccessException e){
+               throw new RuntimeException("Database error occurred while updating reviews. " + e.getMessage());
+           }
+           catch (Exception e){
+               throw new RuntimeException("An unexpected error occurred while updating reviews. " + e.getMessage());
+           }
+       }
+       else{
+           throw new ResourceNotFoundException ("Review not found");
+       }
+    }
 
 
     //

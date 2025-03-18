@@ -36,7 +36,7 @@ public class Users {
     @Column(name = "phone_number", length = 20, nullable = false)
     private String phoneNumber;
 
-    @NotBlank(message = "Role cannot be empty")
+    @NotBlank(message = "Role cannot be empty. (ADMIN or USER)")
     @Column(name = "role", length = 10, nullable = false)
     private String role;
 
