@@ -1,13 +1,17 @@
 package com.bookhub.Service;
 
 import com.bookhub.CustomException.ResourceNotFoundException;
+import com.bookhub.CustomException.UnauthorizedActionException;
 import com.bookhub.Model.Books;
 import com.bookhub.Model.Reviews;
+import com.bookhub.Model.Users;
 import com.bookhub.Repository.Mongo.ReviewsRepository;
 import com.bookhub.Repository.MySQL.BooksRepository;
+import com.bookhub.Repository.MySQL.UsersRepository;
 import com.bookhub.Security.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.dao.DataAccessException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +21,15 @@ import java.util.Optional;
 public class ReviewService {
     private final ReviewsRepository reviewsRepository;
     private final BooksRepository booksRepository;
+    private final UsersRepository userRepository;
     private final JwtUtil jwtUtil;
 
     public ReviewService(ReviewsRepository reviewsRepository, BooksRepository booksRepository
-            , JwtUtil jwtUtil) {
+            , JwtUtil jwtUtil, UsersRepository userRepository) {
         this.reviewsRepository = reviewsRepository;
         this.booksRepository = booksRepository;
         this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
     @Transactional
@@ -64,13 +70,18 @@ public class ReviewService {
         //System.out.println("ID in Review Service Class " + testUserId);
 
         if(book.isEmpty()){
-            throw new ResourceNotFoundException ("Book not found");
+            throw new ResourceNotFoundException ("There is no book with id " + bookId);
         }
-        if(comment == null || comment.isEmpty()){
-            throw new IllegalArgumentException("Comment cannot be empty");
-        }
+//        if(comment == null || comment.isEmpty()){
+//            throw new IllegalArgumentException("Comment cannot be empty");
+//        }
         if(rating > 5 || rating < 0){
             throw new ResourceNotFoundException ("Invalid rating! Rating must be between 0 and 5");
+        }
+        // Check if the user has already reviewed the book
+        Optional<Reviews> existingReview = reviewsRepository.findByUserIdAndBookId(userId, bookId);
+        if (existingReview.isPresent()) {
+            throw new IllegalArgumentException("You have already reviewed this book.");
         }
         try{
             reviews.setUserId(userId);
@@ -87,6 +98,7 @@ public class ReviewService {
     @Transactional
     public void updateReview(String reviewId, Reviews newReviews, String token){
         Optional<Reviews> existingReview = reviewsRepository.findById(reviewId);
+
         Integer loggedInUserId = jwtUtil.extractUserId(token);
         Integer rating = newReviews.getRating();
         String comment = newReviews.getComment();
@@ -119,25 +131,29 @@ public class ReviewService {
        }
     }
 
+    @Transactional
+    public void deleteReview(String reviewId) {
+        String loggedInEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+        Optional<Users> loggedInUser = userRepository.findByEmail(loggedInEmail);
 
-    //
-//    public boolean isValidBookId(String bookId) {
-//        Integer count = jdbcTemplate.queryForObject(
-//                "SELECT COUNT(*) FROM books WHERE id = ?", Integer.class, bookId);
-//        return count != null && count > 0;
-//    }
-//
-//    public boolean isValidUserId(String userId) {
-//        Integer count = jdbcTemplate.queryForObject(
-//                "SELECT COUNT(*) FROM users WHERE id = ?", Integer.class, userId);
-//        return count != null && count > 0;
-//    }
-//
-//    public Reviews saveReview(Reviews review) {
-//        if (!isValidBookId(review.getBookId()) || !isValidUserId(review.getUserId())) {
-//            throw new IllegalArgumentException("Invalid bookId or userId");
-//        }
-//        return reviewsRepository.save(review);
-//    }
+        if (loggedInUser.isEmpty()) {
+            throw new UnauthorizedActionException("Unauthorized action. Please log in again.");
+        }
+        Integer loggedInUserId = loggedInUser.get().getUserId();
+        String loginUserRole = loggedInUser.get().getRole();
 
+        Optional<Reviews> toBeDeletedReview = reviewsRepository.findById(reviewId);
+        if (toBeDeletedReview.isEmpty()) {
+            throw new ResourceNotFoundException("Review not found.");
+        }
+        if (loginUserRole.equals("ADMIN")) {
+            reviewsRepository.deleteById(reviewId);
+        } else if (loginUserRole.equals("USER")) {
+            if (!toBeDeletedReview.get().getUserId().equals(loggedInUserId)) {
+                throw new UnauthorizedActionException("You can only delete your own reviews.");
+            }
+            reviewsRepository.deleteById(reviewId);
+        }
+
+    }
 }

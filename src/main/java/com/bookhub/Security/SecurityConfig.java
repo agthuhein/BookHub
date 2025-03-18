@@ -60,7 +60,7 @@ public class SecurityConfig{
                         .requestMatchers("/api/users/**", "/addReview", "/updateReview/{reviewId}").hasRole("USER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         //.requestMatchers("/api/users/{userId}/update").permitAll()
-                        .requestMatchers("/api/updateUser/{userId}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/updateUser/{userId}", "/deleteReview/{reviewId}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())

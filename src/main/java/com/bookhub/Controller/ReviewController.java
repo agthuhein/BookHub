@@ -1,6 +1,7 @@
 package com.bookhub.Controller;
 
 import com.bookhub.CustomException.ResourceNotFoundException;
+import com.bookhub.CustomException.UnauthorizedActionException;
 import com.bookhub.Model.Reviews;
 import com.bookhub.Service.ReviewService;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
@@ -99,5 +100,22 @@ public class ReviewController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating review. " +e.getMessage());
         }
 
+    }
+
+    @DeleteMapping("/deleteReview/{reviewId}")
+    public ResponseEntity<Object> deleteReview(@PathVariable("reviewId") String reviewId) {
+        try {
+            reviewService.deleteReview(reviewId);
+            return ResponseEntity.status(HttpStatus.OK).body("Successfully deleted review.");
+        }
+        catch (UnauthorizedActionException e) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
+        }
+        catch (ResourceNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error deleting review. " + e.getMessage());
+        }
     }
 }
