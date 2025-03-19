@@ -56,10 +56,10 @@ public class SecurityConfig{
                                 "/getBookByAuthor/{authorId}",
                                 "/getBookByCategory/{categoryId}",
                                 "/getBookByPublisher/{publisherId}",
-                                "/getAllReviews", "/getReviewByBook/{bookId}").permitAll()
-                        .requestMatchers("/api/users/**", "/addReview", "/updateReview/{reviewId}").hasRole("USER")
+                                "/getAllReviews",
+                                "/getReviewByBook/{bookId}").permitAll()
+                        .requestMatchers("/api/users/**", "/addReview", "/updateReview/{reviewId}", "/submitOrder").hasRole("USER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        //.requestMatchers("/api/users/{userId}/update").permitAll()
                         .requestMatchers("/api/updateUser/{userId}", "/deleteReview/{reviewId}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception

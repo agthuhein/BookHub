@@ -64,7 +64,7 @@ public class ReviewController {
         }
         try{
             reviewService.addReview(review, token.replace("Bearer ", ""));
-            return ResponseEntity.status(HttpStatus.CREATED).body("Review added successfully")  ;
+            return ResponseEntity.status(HttpStatus.CREATED).body("Review added successfully");
         }
         catch (ResourceNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
