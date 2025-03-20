@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface OrdersRepository extends JpaRepository<Orders, Integer> {
+    Orders getUserIdByOrderId(Integer orderId);
 }

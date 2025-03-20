@@ -1,6 +1,7 @@
 package com.bookhub.Controller;
 
 import com.bookhub.CustomException.ResourceNotFoundException;
+import com.bookhub.Model.Books;
 import com.bookhub.Model.Orders;
 import com.bookhub.Service.OrderService;
 import org.springframework.http.HttpStatus;
@@ -22,8 +23,15 @@ public class OrderController {
         this.orderService = orderService;
     }
     @GetMapping("/api/admin/getAllOrder")
-    public List<OrderService.OrderDTO> getAllOrders() {
-        return orderService.getAllOrders();
+    public ResponseEntity<Object> getAllOrders() {
+        try {
+            List<OrderService.OrderDTO> orders = orderService.getAllOrders();
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching all the books.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 //    @PostMapping("/submitOrder")

@@ -2,13 +2,16 @@ package com.bookhub.Service;
 
 import com.bookhub.CustomException.BookNotFoundException;
 import com.bookhub.CustomException.BookOutOfStockException;
+import com.bookhub.CustomException.EmailException;
 import com.bookhub.CustomException.NotEnoughStockException;
 import com.bookhub.Model.Orders;
+import com.bookhub.Model.Users;
 import com.bookhub.Repository.MySQL.BooksRepository;
 import com.bookhub.Repository.MySQL.OrderItemsRepository;
 import com.bookhub.Repository.MySQL.OrdersRepository;
 import com.bookhub.Repository.MySQL.UsersRepository;
 import com.bookhub.Security.JwtUtil;
+import jakarta.mail.MessagingException;
 import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
 
@@ -22,9 +25,11 @@ import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +37,7 @@ public class OrderService {
 
     private final JdbcTemplate jdbcTemplate;
     private final OrdersRepository ordersRepository;
+    private final EmailService emailService;
     private final OrderItemsRepository orderItemsRepository;
     private final UsersRepository usersRepository;
     private final BooksRepository booksRepository;
@@ -39,13 +45,15 @@ public class OrderService {
 
     public OrderService(JdbcTemplate jdbcTemplate, JwtUtil jwtUtil, OrdersRepository ordersRepository,
                         OrderItemsRepository orderItemsRepository,
-                        UsersRepository usersRepository, BooksRepository booksRepository) {
+                        UsersRepository usersRepository, BooksRepository booksRepository,
+                        EmailService emailService) {
         this.jdbcTemplate = jdbcTemplate;
         this.jwtUtil = jwtUtil;
         this.ordersRepository = ordersRepository;
         this.orderItemsRepository = orderItemsRepository;
         this.usersRepository = usersRepository;
         this.booksRepository = booksRepository;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -64,6 +72,11 @@ public class OrderService {
 
     @Transactional
     public void updateOrderStatus(Integer orderId, String newStatus) {
+        Orders userOrder = ordersRepository.findById(orderId).get();
+        Integer userId = userOrder.getUsers().getUserId();
+        Optional<Users> user = usersRepository.findById(userId);
+        String email = user.get().getEmail();
+
         if(!newStatus.isEmpty()) {
             if(!ordersRepository.existsById(orderId)) {
                 throw new RuntimeException("Order ID: " + orderId + " does not exist.");
@@ -90,6 +103,15 @@ public class OrderService {
             }
             try{
                 ordersRepository.save(orders);
+                // Attempt to send email
+                try {
+                    String subject = "Order Status Update";
+                    String text = "Your order updated information \nReference number: " + orderId +  "\nORDER STATUS :  " + newStatus.toUpperCase();
+                    emailService.sendEmail(email, subject, text);
+                } catch (MessagingException e) {
+                    System.err.println("Email sending failed: " + e.getMessage());
+                    throw new EmailException("Order submission failed due to email error.");
+                }
             }
             catch (DataIntegrityViolationException e) {
                 throw new RuntimeException("This order has already been cancelled.");
@@ -112,7 +134,7 @@ public class OrderService {
     @Transactional
     public int addOrderUsingStoredProcedure(String paymentMethod, String shippingAddress, String orderItemsJson, String token) {
         Integer userId = jwtUtil.extractUserId(token);
-        System.out.println(userId);
+        String userEmail = jwtUtil.extractUserEmail(token);
         // Call the stored procedure
         String storedProcedureName = "AddOrder";
         try{
@@ -141,8 +163,20 @@ public class OrderService {
                     )
             );
 
-            // Get the result from the output para (the new order ID)
-            return (int) parameters.get("p_new_order_id");
+            int orderId = (int) parameters.get("p_new_order_id");
+
+            // Attempt to send email
+            try {
+                String subject = "Order Submitted";
+                String text = "Thank you for your order!\nOrder Submitted.\nReference number: " + orderId;
+                emailService.sendEmail(userEmail, subject, text);
+                System.out.println("Order ID: " + orderId + " has been submitted successfully.");
+            } catch (MessagingException e) {
+                System.err.println("Email sending failed: " + e.getMessage());
+                throw new EmailException("Order submission failed due to email error.");
+            }
+
+            return orderId;
         }
         catch (DataAccessException e) {
             if (e.getMessage().contains("Book is out of stock")) {
@@ -154,6 +188,9 @@ public class OrderService {
             } else {
                 throw new RuntimeException("An unexpected error occurred while processing the order.", e);
             }
+        }
+        catch (Exception e) {
+            throw new RuntimeException("An unexpected error occurred while processing the order.", e);
         }
 
     }

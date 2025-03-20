@@ -11,6 +11,14 @@ spring:
     mongodb:
       uri: mongodb://localhost:27017/BookHub
       database: BookHub
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: aungthuhein.bm@gmail.com
+    password: vlui wwpi xfei fjlk
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
   jpa:
     hibernate:
