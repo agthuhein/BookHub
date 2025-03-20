@@ -14,11 +14,11 @@ public class OrderItems {
     private Integer orderItemId;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", referencedColumnName = "order_id")
     private Orders orders;
 
     @ManyToOne
-    @JoinColumn(name = "book_id", nullable = false)
+    @JoinColumn(name = "book_id", referencedColumnName = "book_id")
     private Books books;
 
     @Column(name = "order_quantity", nullable = false)

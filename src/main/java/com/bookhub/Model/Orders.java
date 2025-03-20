@@ -42,6 +42,9 @@ public class Orders {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "orders")
+    private List<OrderItems> orderItems;
+
     @PrePersist
     public void prePersist() {
         LocalDateTime now = LocalDateTime.now();
@@ -60,7 +63,7 @@ public class Orders {
     public Orders() {
     }
 
-    public Orders(Integer orderId, Users users, LocalDateTime orderDate, BigDecimal totalAmount, String orderStatus, String paymentMethod, String shippingAddress, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Orders(Integer orderId, Users users, LocalDateTime orderDate, BigDecimal totalAmount, String orderStatus, String paymentMethod, String shippingAddress, LocalDateTime createdAt, LocalDateTime updatedAt, List<OrderItems> orderItems) {
         this.orderId = orderId;
         this.users = users;
         this.orderDate = orderDate;
@@ -70,6 +73,15 @@ public class Orders {
         this.shippingAddress = shippingAddress;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.orderItems = orderItems;
+    }
+
+    public List<OrderItems> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItems> orderItems) {
+        this.orderItems = orderItems;
     }
 
     public Integer getOrderId() {

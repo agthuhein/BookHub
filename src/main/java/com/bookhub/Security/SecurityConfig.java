@@ -57,7 +57,7 @@ public class SecurityConfig{
                                 "/getBookByCategory/{categoryId}",
                                 "/getBookByPublisher/{publisherId}",
                                 "/getAllReviews",
-                                "/getReviewByBook/{bookId}").permitAll()
+                                "/getReviewByBook/{bookId}", "/getAllOrder").permitAll()
                         .requestMatchers("/api/users/**", "/addReview", "/updateReview/{reviewId}", "/submitOrder").hasRole("USER")
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/updateUser/{userId}", "/deleteReview/{reviewId}").hasAnyRole("ADMIN", "USER")

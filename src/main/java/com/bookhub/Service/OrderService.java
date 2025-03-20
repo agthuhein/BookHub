@@ -3,33 +3,106 @@ package com.bookhub.Service;
 import com.bookhub.CustomException.BookNotFoundException;
 import com.bookhub.CustomException.BookOutOfStockException;
 import com.bookhub.CustomException.NotEnoughStockException;
+import com.bookhub.Model.Orders;
+import com.bookhub.Repository.MySQL.BooksRepository;
+import com.bookhub.Repository.MySQL.OrderItemsRepository;
+import com.bookhub.Repository.MySQL.OrdersRepository;
+import com.bookhub.Repository.MySQL.UsersRepository;
 import com.bookhub.Security.JwtUtil;
+import jakarta.persistence.PersistenceException;
 import jakarta.transaction.Transactional;
-import java.sql.SQLException;
+
+import java.math.BigDecimal;
 import java.sql.Types;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
+import org.springframework.orm.jpa.JpaSystemException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
 
     private final JdbcTemplate jdbcTemplate;
+    private final OrdersRepository ordersRepository;
+    private final OrderItemsRepository orderItemsRepository;
+    private final UsersRepository usersRepository;
+    private final BooksRepository booksRepository;
     private final JwtUtil jwtUtil;
 
-    public OrderService(JdbcTemplate jdbcTemplate, JwtUtil jwtUtil) {
+    public OrderService(JdbcTemplate jdbcTemplate, JwtUtil jwtUtil, OrdersRepository ordersRepository,
+                        OrderItemsRepository orderItemsRepository,
+                        UsersRepository usersRepository, BooksRepository booksRepository) {
         this.jdbcTemplate = jdbcTemplate;
         this.jwtUtil = jwtUtil;
+        this.ordersRepository = ordersRepository;
+        this.orderItemsRepository = orderItemsRepository;
+        this.usersRepository = usersRepository;
+        this.booksRepository = booksRepository;
     }
 
     @Transactional
-    public int addOrderUsingStoredProcedure(String orderStatus, String paymentMethod, String shippingAddress, String orderItemsJson, String token) {
+    public List<OrderDTO> getAllOrders() {
+        List<Orders> orders = ordersRepository.findAll();
+        return ordersList(orders);
+    }
+
+    @Transactional
+    public void updateOrderStatus(Integer orderId, String newStatus) {
+        if(!newStatus.isEmpty()) {
+            if(!ordersRepository.existsById(orderId)) {
+                throw new RuntimeException("Order ID: " + orderId + " does not exist.");
+            }
+            Orders orders = ordersRepository.findById(orderId).get();
+            if(newStatus.equalsIgnoreCase("cancelled")){
+                if(orders.getOrderStatus().equalsIgnoreCase("cancelled")){
+                    throw new RuntimeException("Order ID: " + orderId + " is already cancelled.");
+                }
+                orders.setOrderStatus("cancelled");
+            }
+            else if(newStatus.equalsIgnoreCase("confirmed")
+            || newStatus.equalsIgnoreCase("processing")
+            || newStatus.equalsIgnoreCase("shipped")
+            || newStatus.equalsIgnoreCase("delivered")
+            || newStatus.equalsIgnoreCase("completed")){
+                if(orders.getOrderStatus().equalsIgnoreCase("cancelled")){
+                    throw new RuntimeException("Order ID: " + orderId + " is already cancelled.");
+                }
+                orders.setOrderStatus(newStatus);
+            }
+            else {
+                throw new RuntimeException("The order status is not correct.");
+            }
+            try{
+                ordersRepository.save(orders);
+            }
+            catch (DataIntegrityViolationException e) {
+                throw new RuntimeException("This order has already been cancelled.");
+            }
+            catch (JpaSystemException | PersistenceException e) {  // CATCH JPA EXCEPTION
+                throw new RuntimeException("This order has already been cancelled.");
+            }
+            catch(DataAccessException e){
+                throw new RuntimeException("Database access error occurred while updating order status.", e);
+            }
+            catch(Exception e){
+                throw new RuntimeException("An unexpected error occurred while updating order status.", e);
+            }
+        }
+        else {
+            throw new RuntimeException("Order is empty!");
+        }
+    }
+
+    @Transactional
+    public int addOrderUsingStoredProcedure(String paymentMethod, String shippingAddress, String orderItemsJson, String token) {
         Integer userId = jwtUtil.extractUserId(token);
         System.out.println(userId);
         // Call the stored procedure using JdbcTemplate
@@ -43,7 +116,7 @@ public class OrderService {
 
                         // Set input parameters
                         callableStatement.setInt(1, userId);
-                        callableStatement.setString(2, orderStatus);
+                        callableStatement.setString(2, "pending");
                         callableStatement.setString(3, paymentMethod);
                         callableStatement.setString(4, shippingAddress);
                         callableStatement.setString(5, orderItemsJson);
@@ -80,5 +153,53 @@ public class OrderService {
         }
 
     }
+    public record OrderDTO(
+            int orderId,
+            int userId,
+            String firstName,
+            String lastName,
+            String email,
+            String phoneNumber,
+            String orderDate,
+            BigDecimal totalAmount,
+            String orderStatus,
+            String paymentMethod,
+            String shippingAddress,
+            List<BookInfoDTO> books
+    ) {
+        public record BookInfoDTO(int bookId, String bookTitle, int orderQuantity, String pricePerUnit) {}
+    }
 
+    public List<OrderDTO> ordersList(List<Orders> orders) {
+        return orders.stream().map(order -> {
+            List<OrderDTO.BookInfoDTO> bookInfo = order.getOrderItems().stream().map(orderItem -> {
+                BigDecimal pricePerUnit = orderItem.getPricePerUnit();
+                String priceStr = pricePerUnit.toPlainString();
+
+                return new OrderDTO.BookInfoDTO(
+                        orderItem.getBooks().getBookId(),
+                        orderItem.getBooks().getTitle(),
+                        orderItem.getOrderQuantity(),
+                        priceStr
+
+                );
+            }).collect(Collectors.toList());
+
+            return new OrderDTO(
+                    order.getOrderId(),
+                    order.getUsers().getUserId(),
+                    order.getUsers().getFirstName(),
+                    order.getUsers().getLastName(),
+                    order.getUsers().getEmail(),
+                    order.getUsers().getPhoneNumber(),
+                    order.getOrderDate().toString(),
+                    order.getTotalAmount(),
+                    order.getOrderStatus(),
+                    order.getPaymentMethod(),
+                    order.getShippingAddress(),
+                    bookInfo
+            );
+        }).collect(Collectors.toList());
+    }
 }
+
