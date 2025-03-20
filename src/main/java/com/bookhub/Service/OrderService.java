@@ -50,8 +50,16 @@ public class OrderService {
 
     @Transactional
     public List<OrderDTO> getAllOrders() {
-        List<Orders> orders = ordersRepository.findAll();
-        return ordersList(orders);
+        try{
+            List<Orders> orders = ordersRepository.findAll();
+            return ordersList(orders);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while fetching all orders. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while fetching all orders. ", e.getCause());
+        }
     }
 
     @Transactional
@@ -105,18 +113,16 @@ public class OrderService {
     public int addOrderUsingStoredProcedure(String paymentMethod, String shippingAddress, String orderItemsJson, String token) {
         Integer userId = jwtUtil.extractUserId(token);
         System.out.println(userId);
-        // Call the stored procedure using JdbcTemplate
+        // Call the stored procedure
         String storedProcedureName = "AddOrder";
         try{
-            // Setting up input and output parameters
             Map<String, Object> parameters = jdbcTemplate.call(
                     connection -> {
-                        // Prepare the stored procedure call
                         java.sql.CallableStatement callableStatement = connection.prepareCall("{call " + storedProcedureName + "(?, ?, ?, ?, ?, ?)}");
 
                         // Set input parameters
                         callableStatement.setInt(1, userId);
-                        callableStatement.setString(2, "pending");
+                        callableStatement.setString(2, "pending");      //set default status
                         callableStatement.setString(3, paymentMethod);
                         callableStatement.setString(4, shippingAddress);
                         callableStatement.setString(5, orderItemsJson);
@@ -135,11 +141,10 @@ public class OrderService {
                     )
             );
 
-            // Get the result from the output parameter (the new order ID)
+            // Get the result from the output para (the new order ID)
             return (int) parameters.get("p_new_order_id");
         }
         catch (DataAccessException e) {
-            // Catch SQLException and check if it's a custom error raised by SIGNAL in stored procedure
             if (e.getMessage().contains("Book is out of stock")) {
                 throw new BookOutOfStockException("Error: Book is out of stock.");
             } else if (e.getMessage().contains("Not enough stock available")) {
@@ -147,7 +152,6 @@ public class OrderService {
             } else if (e.getMessage().contains("Book does not exist")) {
                 throw new BookNotFoundException("Error: Book does not exist.");
             } else {
-                // For other SQL errors, rethrow the exception
                 throw new RuntimeException("An unexpected error occurred while processing the order.", e);
             }
         }
