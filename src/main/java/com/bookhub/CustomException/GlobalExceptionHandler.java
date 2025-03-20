@@ -78,4 +78,9 @@ public class GlobalExceptionHandler {
     public String handleEmailException(EmailException ex) {
         return "Error: " + ex.getMessage();
     }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    public ResponseEntity<String> handleBookNotFound(OrderNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+    }
 }

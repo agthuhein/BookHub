@@ -1,5 +1,6 @@
 package com.bookhub.Controller;
 
+import com.bookhub.CustomException.OrderNotFoundException;
 import com.bookhub.CustomException.ResourceNotFoundException;
 import com.bookhub.Model.Books;
 import com.bookhub.Model.Orders;
@@ -34,16 +35,43 @@ public class OrderController {
         }
     }
 
-//    @PostMapping("/submitOrder")
-//    public int submitOrder(@RequestBody OrderRequest orderRequest, @RequestHeader("Authorization") String token) {
-//        return orderService.addOrderUsingStoredProcedure(
-//                orderRequest.orderStatus,
-//                orderRequest.paymentMethod,
-//                orderRequest.shippingAddress,
-//                orderRequest.orderItems,
-//                token.replace("Bearer ", "")
-//        );
-//    }
+    @GetMapping("/api/admin/getOrderById/{orderId}")
+    public ResponseEntity<Object> getOrderById(@PathVariable Integer orderId) {
+        try{
+            List<OrderService.OrderDTO> orders = orderService.getOrderByOrderId(orderId);
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        catch (OrderNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (RuntimeException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching the order.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/admin/getOrderByStatus")
+    public ResponseEntity<Object> getOrderByStatus(@RequestParam String status) {
+        try{
+            List<OrderService.OrderDTO> orders = orderService.getOrderByStatus(status.toLowerCase());
+            return new ResponseEntity<>(orders, HttpStatus.OK);
+        }
+        catch (OrderNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (RuntimeException e){
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        catch (Exception e) {
+            return new ResponseEntity<>("An error occurred while fetching the order.",
+                    HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     @PostMapping("/submitOrder")
     public ResponseEntity<Object> submitOrder(@RequestBody OrderRequest orderRequest, @RequestHeader("Authorization") String token) {
         return ResponseEntity.status(HttpStatus.CREATED).body("Order is successfully submitted. The order ID is: " +

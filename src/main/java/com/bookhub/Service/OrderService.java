@@ -1,9 +1,6 @@
 package com.bookhub.Service;
 
-import com.bookhub.CustomException.BookNotFoundException;
-import com.bookhub.CustomException.BookOutOfStockException;
-import com.bookhub.CustomException.EmailException;
-import com.bookhub.CustomException.NotEnoughStockException;
+import com.bookhub.CustomException.*;
 import com.bookhub.Model.Orders;
 import com.bookhub.Model.Users;
 import com.bookhub.Repository.MySQL.BooksRepository;
@@ -67,6 +64,40 @@ public class OrderService {
         }
         catch (Exception e){
             throw new RuntimeException("An unexpected error occurred while fetching all orders. ", e.getCause());
+        }
+    }
+    //Get order by ID
+    @Transactional
+    public List<OrderDTO> getOrderByOrderId(Integer orderId) {
+        if(!ordersRepository.existsById(orderId)) {
+            throw new RuntimeException("Order ID: " + orderId + " does not exist.");
+        }
+        try{
+            List<Orders> orders = ordersRepository.findByOrderId(orderId);
+            return ordersList(orders);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while fetching order. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while fetching order. ", e);
+        }
+    }
+
+    @Transactional
+    public List<OrderDTO> getOrderByStatus(String status) {
+        if(status.isEmpty()) {
+            throw new RuntimeException("Status cannot be empty.");
+        }
+        try{
+            List<Orders> orders = ordersRepository.findByOrderStatus(status);
+            return ordersList(orders);
+        }
+        catch (DataAccessException e){
+            throw new RuntimeException("Database access error occurred while fetching order by status. " + e.getMessage());
+        }
+        catch (Exception e){
+            throw new RuntimeException("An unexpected error occurred while fetching order by status. ", e);
         }
     }
 
@@ -194,6 +225,7 @@ public class OrderService {
         }
 
     }
+
     public record OrderDTO(
             int orderId,
             int userId,
