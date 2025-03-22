@@ -1,14 +1,12 @@
 package com.bookhub.Service;
 
+import com.bookhub.CustomException.CustomDeletionException;
 import com.bookhub.CustomException.ResourceNotFoundException;
 import com.bookhub.Model.Authors;
 import com.bookhub.Model.Books;
 import com.bookhub.Model.Categories;
 import com.bookhub.Model.Publishers;
-import com.bookhub.Repository.MySQL.AuthorsRepository;
-import com.bookhub.Repository.MySQL.BooksRepository;
-import com.bookhub.Repository.MySQL.CategoriesRepository;
-import com.bookhub.Repository.MySQL.PublishersRepository;
+import com.bookhub.Repository.MySQL.*;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,12 +22,15 @@ public class BookService {
     private final AuthorsRepository authorsRepository;
     private final CategoriesRepository categoriesRepository;
     private final PublishersRepository publishersRepository;
+    private final OrderItemsRepository orderItemsRepository;
     public BookService(BooksRepository booksRepository, AuthorsRepository authorsRepository,
-                       CategoriesRepository categoriesRepository, PublishersRepository publishersRepository) {
+                       CategoriesRepository categoriesRepository, PublishersRepository publishersRepository,
+                       OrderItemsRepository orderItemsRepository) {
         this.booksRepository = booksRepository;
         this.authorsRepository = authorsRepository;
         this.categoriesRepository = categoriesRepository;
         this.publishersRepository = publishersRepository;
+        this.orderItemsRepository = orderItemsRepository;
     }
 
     //Get all Books
@@ -204,6 +205,13 @@ public class BookService {
     public void deleteBook(Integer bookId) {
         if(!booksRepository.existsById(bookId)){
             throw new ResourceNotFoundException("Book ID: " + bookId + " does not exist.");
+        }
+
+        Books existingBook = booksRepository.findById(bookId)
+                .orElseThrow(() -> new ResourceNotFoundException("Book ID: " + bookId + " does not exist."));
+
+        if(orderItemsRepository.existsByBooks(existingBook)){
+            throw new CustomDeletionException("Cannot delete book. Orders are still associated with the book.");
         }
         try{
             booksRepository.deleteById(bookId);
