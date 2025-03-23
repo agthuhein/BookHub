@@ -1,4 +1,4 @@
-# Online Book-Selling Application
+# BookHub - Online Book-Selling Application
 
 This project is a backend-only application designed for an online book-selling platform. The system allows users to browse books, post books' reviews and place orders. The application is developed using **Spring Boot**, **MySQL**, and **MongoDB**. The backend exposes a **RESTful API** to interact with the system.
 
