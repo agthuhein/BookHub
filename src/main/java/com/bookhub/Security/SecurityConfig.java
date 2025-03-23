@@ -44,13 +44,9 @@ public class SecurityConfig{
                         session ->
                                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/register").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .requestMatchers("/getAllAuthors").permitAll()
-                        .requestMatchers("/getAllPublishers").permitAll()
-                        .requestMatchers("/getAllCategories").permitAll()
-                        .requestMatchers("/getAllBooks").permitAll()
-                        .requestMatchers("/getBookByTitle",
+                        .requestMatchers("/register","/login","/getAllAuthors",
+                                "/getAllPublishers","/getAllCategories",
+                                "/getAllBooks","/getBookByTitle",
                                 "/getBookById/{bookId}",
                                 "/getBookByISBN/{isbn}",
                                 "/getBookByAuthor/{authorId}",
