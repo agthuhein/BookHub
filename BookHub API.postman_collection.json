@@ -1,0 +1,1305 @@
+{
+	"info": {
+		"_postman_id": "e9fed2f1-6c53-41e1-9c89-b4d906c4407d",
+		"name": "BookHub API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "42841407"
+	},
+	"item": [
+		{
+			"name": "User Access",
+			"item": [
+				{
+					"name": "User Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Smith\",\n    \"email\": \"aung.thu@gisma-student.com\",\n    \"password\": \"agthuhein123\",\n    \"phoneNumber\": \"+49 1234567890\",\n    \"role\": \"USER\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"myat86@gmail.com\",\n    \"password\":\"myatsu86\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"aung.thu@gisma-student.com\",\n    \"password\":\"agthuhein123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User Operation",
+			"item": [
+				{
+					"name": "Get All Users",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6Im15YXQ4NkBnbWFpbC5jb20iLCJpYXQiOjE3NDI1OTQxNjIsImV4cCI6MTc0MjYzMDE2Mn0.Zw_LDpPlduQ5etsmuTaJ9XluLN3Mrhc64oLfhQquHSQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/getUsers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"getUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Users By Role",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6Im15YXQ4NkBnbWFpbC5jb20iLCJpYXQiOjE3NDI1OTQxNjIsImV4cCI6MTc0MjYzMDE2Mn0.Zw_LDpPlduQ5etsmuTaJ9XluLN3Mrhc64oLfhQquHSQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/getUsersByRole?role=ADMIN",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"getUsersByRole"
+							],
+							"query": [
+								{
+									"key": "role",
+									"value": "ADMIN"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6Im15YXQ4NkBnbWFpbC5jb20iLCJpYXQiOjE3NDI1OTQxNjIsImV4cCI6MTc0MjYzMDE2Mn0.Zw_LDpPlduQ5etsmuTaJ9XluLN3Mrhc64oLfhQquHSQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/getUsersById/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"getUsersById",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjQsInN1YiI6ImF1bmcudGh1QGdpc21hLXN0dWRlbnQuY29tIiwiaWF0IjoxNzQyNTk0MjM2LCJleHAiOjE3NDI2MzAyMzZ9.NdVP_rj_u-1Es9Gs29MRxMZXxYL4YgjCCQ7kPMRSD4I",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"aung.thu@gisma-student.com\",\n    \"password\":\"aung123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/updateUser/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"updateUser",
+								"3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Author Operations",
+			"item": [
+				{
+					"name": "Get Authors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getAllAuthors",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getAllAuthors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add New Author",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6Im15YXQ4NkBnbWFpbC5jb20iLCJpYXQiOjE3NDI1OTA2MDEsImV4cCI6MTc0MjYyNjYwMX0.dQpstz8HfVx4_yeZ3yDxMDyDIiZBojd9iTVmQHEO09A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authorName\": \"William Shakespeare\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/addAuthor",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"addAuthor"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Author Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6Im15YXQ4NkBnbWFpbC5jb20iLCJpYXQiOjE3NDI1OTA2MDEsImV4cCI6MTc0MjYyNjYwMX0.dQpstz8HfVx4_yeZ3yDxMDyDIiZBojd9iTVmQHEO09A",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"authorName\": \"Henry Kissinger\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/updateAuthor/12",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"updateAuthor",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Author",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNDA5NjksImV4cCI6MTc0MjA3Njk2OX0.M0TRleC3a1JPXfU7gAT3oAyNLqqfNiklBnloWrQPftw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/deleteAuthor/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"deleteAuthor",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Publisher Operations",
+			"item": [
+				{
+					"name": "Get All Publishers",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getAllPublishers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getAllPublishers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add New Publisher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNzM2OTksImV4cCI6MTc0MjEwOTY5OX0.9f7q48ejTji__21G5RKGeMb0ih1W77Uol5VfA_l95rc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"publisherName\":\"Penguin Random House\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/addPublisher",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"addPublisher"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Publisher Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNzM4MzksImV4cCI6MTc0MjEwOTgzOX0.JWq1DBAQSxk41O52nQRxDeL_p7-v07hCOTvGK-39O7M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"publisherName\":\"Pearson\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/updatePublisher/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"updatePublisher",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Publisher",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNzU0NjksImV4cCI6MTc0MjExMTQ2OX0.mm-XGrAJ6tXNy6uHIj19rSdYdA38bVvKXSiTzOdvoUo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/deletePublisher/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"deletePublisher",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Category Operations",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getAllCategories",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getAllCategories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add New Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNzkyODgsImV4cCI6MTc0MjExNTI4OH0.KOmE2BZ7gBwHA9n7YVd5oV4d0uLz6MX8xvH3lzKs99M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryName\": \"Horror\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/addCategory",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"addCategory"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Category Name",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNzk3MjgsImV4cCI6MTc0MjExNTcyOH0.ixY-zSH9n3uUrg-kyGjXpgh20-z8T2g9KmYY6y6vaGc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"categoryName\": \"Historical\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/updateCategory/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"updateCategory",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIwNzk3OTAsImV4cCI6MTc0MjExNTc5MH0.geOCQ2JqPyofDX2JcM0PJE5eO4Y2pCo8NZrD_1b6AIQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/deleteCategory/4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"deleteCategory",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Book Operations",
+			"item": [
+				{
+					"name": "Get All Books",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getAllBooks",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getAllBooks"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By Id",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getBookById/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getBookById",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By Title",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getBookByTitle?title=Harry%20Potter%20and%20the%20Sorcerer%27s%20Stone",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getBookByTitle"
+							],
+							"query": [
+								{
+									"key": "title",
+									"value": "Murder%20on%20the%20Orient%20Express",
+									"disabled": true
+								},
+								{
+									"key": "title",
+									"value": "Harry%20Potter%20and%20the%20Sorcerer%27s%20Stone"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By ISBN",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getBookByISBN/9780553103540",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getBookByISBN",
+								"9780553103540"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By Author_ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getBookByAuthor/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getBookByAuthor",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By Category_ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getBookByCategory/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getBookByCategory",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book By Publisher_ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getBookByPublisher/77",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getBookByPublisher",
+								"77"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add New Book",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIyMDI3MDMsImV4cCI6MTc0MjIzODcwM30.HWvv3x4S-FgwVI_LY1OQGCK0tlDzE0vxoAtAcbqH9Ws",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isbn\": \"1234567890\",\n    \"title\": \"dfadfa\",\n    \"description\": \"adfadf\",\n    \"price\": 20,\n    \"stockQuantity\": -1,\n    \"publishedDate\": \"2024-11-21\",\n    \"publishers\": {\n        \"publisherId\": 5\n    },\n    \"categories\": {\n        \"categoryId\": 5\n    },\n    \"authors\": [\n        { \"authorId\": 5 },\n        { \"authorId\": 6 },\n        { \"authorId\": 7 }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/addNewBook",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"addNewBook"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book By BookID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIyMDg1ODQsImV4cCI6MTc0MjI0NDU4NH0.Y9QtrNeL675umargeQp4FJNnRDm4_RHqauGabX-ylzQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isbn\": \"9780553103540\",\n    \"title\": \"A Game of Thrones\",\n    \"description\": \"The first book in the A Song of Ice and Fire series.\",\n    \"price\": 39.99,\n    \"stockQuantity\": 10,\n    \"publishedDate\": \"1996-08-01\",\n    \"publishers\": {\n        \"publisherId\": 2\n    },\n    \"categories\": {\n        \"categoryId\": 1\n    },\n    \"authors\": [\n        { \"authorId\": 2 }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/updateBook/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"updateBook",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book By BookID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZ3RodWhlaW5AYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIyMDk0NjQsImV4cCI6MTc0MjI0NTQ2NH0.R6-bbt3pixcIYxj_APrrELNMoJVnK0JobWwzcWHWPig",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/deleteBook/7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"deleteBook",
+								"7"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Review Operations",
+			"item": [
+				{
+					"name": "Get All Reviews",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getAllReviews",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getAllReviews"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Reviews by Book ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/getReviewByBook/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"getReviewByBook",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post User Review on Book ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6ImFndGh1aGVpbi5tbUBnbWFpbC5jb20iLCJpYXQiOjE3NDI1ODc2ODksImV4cCI6MTc0MjYyMzY4OX0.6yS2aTWPqijZawuQkEKQNksuOGMjC6YDJaxzctefFYE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"bookId\": 3,\n        \"comment\": \"It is a fantasitc book. It is worth to read.\",\n        \"rating\": 5\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/addReview",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"addReview"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Review By User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6ImpvaG5kb2VAYm9va2h1Yi5jb20iLCJpYXQiOjE3NDIzMzY2NDIsImV4cCI6MTc0MjM3MjY0Mn0.NfyMNcSoFmNtSqULeEqDljybCDkE87KFh_8iQMc8MZU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"comment\": \"A marvalous book.\",\n    \"rating\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/updateReview/67d8a1cdd0828b4769ddff6b",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"updateReview",
+								"67d8a1cdd0828b4769ddff6b"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Review",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6ImFndGh1aGVpbkBib29raHViLmNvbSIsImlhdCI6MTc0MjM0MDQ4OSwiZXhwIjoxNzQyMzc2NDg5fQ.6t5Azj2BSIKh5FoHr7ah3W8RTUGxa3YSssuNfTSi4Og",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/deleteReview/67d8a126d0828b4769ddff6a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"deleteReview",
+								"67d8a126d0828b4769ddff6a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order Operations",
+			"item": [
+				{
+					"name": "Get All Orders",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInN1YiI6Im15YXQ4NkBnbWFpbC5jb20iLCJpYXQiOjE3NDI1ODc4MDEsImV4cCI6MTc0MjYyMzgwMX0.49cTDbgq0z5_Y5jy4EKeI2SlrQ1nfMGkT-NLX4kVN94",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/getAllOrder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"getAllOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6ImFndGh1aGVpbkBib29raHViLmNvbSIsImlhdCI6MTc0MjUwNDU5MywiZXhwIjoxNzQyNTQwNTkzfQ.-afJV8qbGYUqNPyzKH6nzIiG9YNuVCVwlhJONvDJaS4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/getOrderById/19",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"getOrderById",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Order By Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6ImFndGh1aGVpbkBib29raHViLmNvbSIsImlhdCI6MTc0MjUwNDcwMywiZXhwIjoxNzQyNTQwNzAzfQ.RbX9ZzT7JgN53HnWULxL8Xr15DJNygxBT-oJbYHs7Gs",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/admin/getOrderByStatus?status=delivered",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"getOrderByStatus"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "delivered"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Book Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6ImFndGh1aGVpbi5tbUBnbWFpbC5jb20iLCJpYXQiOjE3NDI1ODc2ODksImV4cCI6MTc0MjYyMzY4OX0.6yS2aTWPqijZawuQkEKQNksuOGMjC6YDJaxzctefFYE",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"paymentMethod\": \"CREDIT CARD\",\n  \"shippingAddress\":\"{\\\"zip\\\": \\\"10711\\\", \\\"city\\\": \\\"Berlin\\\", \\\"street\\\": \\\"Karslruher Str. 14\\\"}\",\n  \"orderItems\": \"[{\\\"book_id\\\": 1, \\\"quantity\\\": 1}, {\\\"book_id\\\": 2, \\\"quantity\\\": 1}, {\\\"book_id\\\": 3, \\\"quantity\\\": 1}]\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/submitOrder",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"submitOrder"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Order Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjIsInN1YiI6ImFndGh1aGVpbkBib29raHViLmNvbSIsImlhdCI6MTc0MjQ5MTE4MiwiZXhwIjoxNzQyNTI3MTgyfQ.4CofNhJTcKc4jHok8TVwJR1LYWivDQgXI6mAuTGUVG0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"orderStatus\": \"confirmed\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/admin/updateOrderStatus/42",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"admin",
+								"updateOrderStatus",
+								"42"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
