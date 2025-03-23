@@ -56,3 +56,10 @@ This project is a backend-only application designed for an online book-selling p
 3. **Set up the MongoDB Database**:
 - **Ensure MongoDB is running**
 - **Configure the connection in application.yml file**
+
+
+### Steps to Test the Application
+**Install Postman API Client**:
+- **Import 'BookHub API.postman_collection.json' into postman collection**
+- **Extract the folders and then test the GET, POST, PUT, and DELETE requests**
+
