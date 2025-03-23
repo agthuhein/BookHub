@@ -58,9 +58,9 @@ public class SecurityConfig{
                                 "/getBookByPublisher/{publisherId}",
                                 "/getAllReviews",
                                 "/getReviewByBook/{bookId}", "/getAllOrder").permitAll()
-                        .requestMatchers("/api/users/**", "/addReview", "/updateReview/{reviewId}", "/submitOrder").hasRole("USER")
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/updateUser/{userId}", "/deleteReview/{reviewId}").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/users/**", "/addReview", "/updateReview/{reviewId}", "/submitOrder").hasRole("USER")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/updateUser/{userId}", "/deleteReview/{reviewId}").hasAnyRole("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .exceptionHandling(exception -> exception
                         .accessDeniedHandler(accessDeniedHandler())

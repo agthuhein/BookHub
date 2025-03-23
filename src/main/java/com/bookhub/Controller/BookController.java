@@ -151,7 +151,7 @@ public class BookController {
     }
 
     //Add new book
-    @PostMapping("/api/admin/addNewBook")
+    @PostMapping("/admin/addNewBook")
     public ResponseEntity<Object> addNewBook(@Valid @RequestBody Books book, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("errors", result.getFieldErrors()
@@ -173,7 +173,7 @@ public class BookController {
     }
 
     //Upadte an existing book
-    @PutMapping("/api/admin/updateBook/{bookId}")
+    @PutMapping("/admin/updateBook/{bookId}")
     public ResponseEntity<Object> updateBook(@PathVariable("bookId") Integer bookId,
                                              @Valid @RequestBody Books book,
                                              BindingResult result) {
@@ -194,7 +194,7 @@ public class BookController {
     }
 
     //Delete book by book Id
-    @DeleteMapping("/api/admin/deleteBook/{bookId}")
+    @DeleteMapping("/admin/deleteBook/{bookId}")
     public ResponseEntity<Object> deleteBook(@PathVariable("bookId") Integer bookId) {
         try{
             bookService.deleteBook(bookId);

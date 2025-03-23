@@ -23,7 +23,7 @@ public class OrderController {
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
-    @GetMapping("/api/admin/getAllOrder")
+    @GetMapping("/admin/getAllOrder")
     public ResponseEntity<Object> getAllOrders() {
         try {
             List<OrderService.OrderDTO> orders = orderService.getAllOrders();
@@ -35,7 +35,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/api/admin/getOrderById/{orderId}")
+    @GetMapping("/admin/getOrderById/{orderId}")
     public ResponseEntity<Object> getOrderById(@PathVariable Integer orderId) {
         try{
             List<OrderService.OrderDTO> orders = orderService.getOrderByOrderId(orderId);
@@ -53,7 +53,7 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/api/admin/getOrderByStatus")
+    @GetMapping("/admin/getOrderByStatus")
     public ResponseEntity<Object> getOrderByStatus(@RequestParam String status) {
         try{
             List<OrderService.OrderDTO> orders = orderService.getOrderByStatus(status.toLowerCase());
@@ -87,7 +87,7 @@ public class OrderController {
 
 
     //Update Order Status
-    @PutMapping("/api/admin/updateOrderStatus/{orderId}")
+    @PutMapping("/admin/updateOrderStatus/{orderId}")
     public ResponseEntity<Object> updateOrderStatus(@PathVariable("orderId") Integer orderId,
                                                     @RequestBody OrderStatusRequest orderStatusRequest,
                                                     BindingResult bindingResult) {

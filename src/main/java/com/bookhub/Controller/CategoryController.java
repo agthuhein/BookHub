@@ -31,7 +31,7 @@ public class CategoryController {
         }
     }
 
-    @PostMapping("/api/admin/addCategory")
+    @PostMapping("/admin/addCategory")
     public ResponseEntity<Object> addCategory(@Valid @RequestBody Categories categories, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid category data." + bindingResult.getAllErrors());
@@ -45,7 +45,7 @@ public class CategoryController {
         }
     }
 
-    @PutMapping("/api/admin/updateCategory/{categoryId}")
+    @PutMapping("/admin/updateCategory/{categoryId}")
     public ResponseEntity<Object> updateCategory(@PathVariable("categoryId") Integer categoryId,
                                                  @Valid @RequestBody Categories categories,
                                                  BindingResult bindingResult) {
@@ -61,7 +61,7 @@ public class CategoryController {
         }
     }
 
-    @DeleteMapping("/api/admin/deleteCategory/{categoryId}")
+    @DeleteMapping("/admin/deleteCategory/{categoryId}")
     public ResponseEntity<Object> deleteCategory(@PathVariable("categoryId") Integer categoryId) {
         try{
             categoryService.deleteCategory(categoryId);

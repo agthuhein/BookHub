@@ -31,7 +31,7 @@ public class PublisherController {
         }
     }
 
-    @PostMapping("/api/admin/addPublisher")
+    @PostMapping("/admin/addPublisher")
     public ResponseEntity<Object> addPublisher(@Valid @RequestBody Publishers publisher, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid publisher data." + bindingResult.getAllErrors());
@@ -45,7 +45,7 @@ public class PublisherController {
         }
     }
 
-    @PutMapping("/api/admin/updatePublisher/{publisherId}")
+    @PutMapping("/admin/updatePublisher/{publisherId}")
     public ResponseEntity<Object> updatePublisher(@PathVariable("publisherId") Integer publisherId,
                                                   @Valid @RequestBody Publishers publisher,
                                                   BindingResult result){
@@ -61,7 +61,7 @@ public class PublisherController {
         }
     }
 
-    @DeleteMapping("/api/admin/deletePublisher/{publisherId}")
+    @DeleteMapping("/admin/deletePublisher/{publisherId}")
     public ResponseEntity<Object> deletePublisher(@PathVariable("publisherId") Integer publisherId) {
         try {
             publisherService.deletePublisher(publisherId);

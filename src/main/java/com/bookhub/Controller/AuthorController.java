@@ -30,7 +30,7 @@ public class AuthorController {
                     HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/api/admin/addAuthor")
+    @PostMapping("/admin/addAuthor")
     public ResponseEntity<Object> addAuthor(@Valid @RequestBody Authors author, BindingResult result) {
         if (result.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid author data." + result.getAllErrors());
@@ -43,7 +43,7 @@ public class AuthorController {
         }
     }
 
-    @PutMapping("/api/admin/updateAuthor/{authorId}")
+    @PutMapping("/admin/updateAuthor/{authorId}")
     public ResponseEntity<Object> updateAuthor(@PathVariable("authorId") Integer authorId,
                                                @Valid @RequestBody Authors author,
                                                BindingResult result) {
@@ -59,7 +59,7 @@ public class AuthorController {
         }
     }
 
-    @DeleteMapping("/api/admin/deleteAuthor/{authorId}")
+    @DeleteMapping("/admin/deleteAuthor/{authorId}")
     public ResponseEntity<Object> deleteAuthor(@PathVariable("authorId") Integer authorId) {
         try {
             authorService.deleteAuthor(authorId);
