@@ -40,7 +40,7 @@ This project is a backend-only application designed for an online book-selling p
 
 - **JDK 21 or higher**
 - **Spring Boot** framework
-- **MySQL** and **MongoDB** installed and running
+- **MySQL 9.2.0** and **MongoDB v8.0.5** installed and running
 
 ### Steps to Run the Application
 
@@ -50,7 +50,11 @@ This project is a backend-only application designed for an online book-selling p
    cd BookHub
 
 2. **Set up the MySQL Database**:
-- **Create the database**
+- **Create the database and name it 'BookHub' database**
+- **Backup the BookHub_BK.sql using the command below**
+```bash
+  mysql -u root -p BookHub < BookHub_BK.sql
+```
 - **Configure the connection in application.yml file**
 
 3. **Set up the MongoDB Database**:
