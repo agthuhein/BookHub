@@ -51,6 +51,8 @@ This project is a backend-only application designed for an online book-selling p
 
 2. **Set up the MySQL Database**:
 - **Create the database and name it 'BookHub' database**
+- **Go to Database Backup folder. Then get the MySQL Database backup file**
+- **Open command line/terminal. Change directory to where the backup file exits**
 - **Backup the BookHub_BK.sql using the command below**
 ```bash
   mysql -u root -p BookHub < BookHub_BK.sql
@@ -59,8 +61,15 @@ This project is a backend-only application designed for an online book-selling p
 
 3. **Set up the MongoDB Database**:
 - **Ensure MongoDB is running**
+- **Create a new database and name it 'BookHub'**
+- **Create 'Reviews' collection**
+```bash
+  use("BookHub");
+  db.createCollection("reviews");
+```
 - **Configure the connection in application.yml file**
 
+4. **Run the BookHub Application**
 
 ### Steps to Test the Application
 **Install Postman API Client**:
